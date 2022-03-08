@@ -1,4 +1,3 @@
-from turtle import width
 from board import Board
 from tkinter import *
 import math
@@ -10,13 +9,14 @@ class GameTurn:
     # Constructeur
     #------------------------------------  
     
-    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, colorPlayer1, colorPlayer2):
+    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, colorPlayer1, colorPlayer2, bgCase):
         
         # Le canvas
         self.__canvasBoard = canvas
         self.__canvasBoard.bind('<Button-1>', self.gameTurn)
         
         # Objet board
+        self.__bgCase = bgCase
         self.__rayon = rayon
         self.__borderdWidth = 5
         self.__board = Board(rayon, boardSize, canvasConfig[0], canvasConfig[1], listSymb, listColor)
@@ -42,8 +42,8 @@ class GameTurn:
         self.__canvasBoard.delete(ALL)
         for value in self.__dic.values():
             listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon)
-            listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1])
-            self.__canvasBoard.create_polygon(listCoordCorner, fill="white", outline=self.__colorBoard, width=self.__borderdWidth)
+            listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon)
+            self.__canvasBoard.create_polygon(listCoordCorner, fill=self.__bgCase, outline=self.__colorBoard, width=self.__borderdWidth)
             self.__canvasBoard.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvasBoard.create_image(value[0][0], value[0][1], image=value[1][0])
         self.__canvasBoard.update()
@@ -99,10 +99,10 @@ class GameTurn:
         value = self.__dic[key]
         value[2] = self.__colorPlayer
         self.__lastHit = (value[1][0], value[1][1])
-        listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon-1/10*self.__rayon)
-        listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1])
-        self.__canvasBoard.create_polygon(listCoordCorner, fill="", outline=self.__colorPlayer, width=1.6/10*self.__rayon)
-        self.__canvasBoard.create_oval(listCoordCircle, fill="", outline=self.__colorPlayer, width=15)
+        listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
+        listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*1.2)
+        self.__canvasBoard.create_polygon(listCoordCorner, fill="", outline=self.__colorPlayer, width=0.2*self.__rayon)
+        self.__canvasBoard.create_oval(listCoordCircle, fill="", outline=self.__colorPlayer, width=0.25*self.__rayon)
         
     #------------------------------------   
     # Changement de joueur

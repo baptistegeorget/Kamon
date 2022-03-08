@@ -1,12 +1,104 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from gameTurn import GameTurn
+import random
 
 class Menu: 
     
     def __init__(self):
         
-        ########## Fenêtre ##########
+        # Liste des background par theme
+        self.__bgAstro = "assets/background/astro.png"
+        self.__bgClassique = "assets/background/classique.png"
+        self.__bgNaruto = "assets/background/naruto.png"
+        
+        # Liste des png par theme
+        self.__listAstro = ["assets/symbole/astro/balance.png",
+                                "assets/symbole/astro/bélier.png",
+                                "assets/symbole/astro/cancer.png",
+                                "assets/symbole/astro/capricorne.png",
+                                "assets/symbole/astro/gémeaux.png",
+                                "assets/symbole/astro/lion.png",
+                                "assets/symbole/astro/poisson.png",
+                                "assets/symbole/astro/sagittaire.png",
+                                "assets/symbole/astro/scorpion.png",
+                                "assets/symbole/astro/taureau.png",
+                                "assets/symbole/astro/verseau.png",
+                                "assets/symbole/astro/vierge.png"]
+        self.__listClassique = ["assets/symbole/classique/bird.png",
+                                "assets/symbole/classique/butterfly.png",
+                                "assets/symbole/classique/door.png",
+                                "assets/symbole/classique/fan.png",
+                                "assets/symbole/classique/fish.png",
+                                "assets/symbole/classique/mountain.png"]
+        self.__listNaruto = ["assets/symbole/naruto/cascade.png",
+                                "assets/symbole/naruto/eau.png",
+                                "assets/symbole/naruto/feu.png",
+                                "assets/symbole/naruto/foudre.png",
+                                "assets/symbole/naruto/herbe.png",
+                                "assets/symbole/naruto/neige.png",
+                                "assets/symbole/naruto/pluie.png",
+                                "assets/symbole/naruto/son.png",
+                                "assets/symbole/naruto/terre.png",
+                                "assets/symbole/naruto/vent.png"]
+        
+        # Liste des couleurs par theme
+        self.__listColorAstro = ["red",
+                             "DarkGoldenrod2",
+                             "CadetBlue2",
+                             "DarkOliveGreen3",
+                             "DarkOrange1",
+                             "DarkOrchid3",
+                             "DarkSeaGreen3",
+                             "DeepSkyBlue3",
+                             "HotPink2",
+                             "MediumOrchid1",
+                             "MediumPurple3",
+                             "OliveDrab4",
+                             "coral1",
+                             "DarkSlateGray4",
+                             "RoyalBlue2",
+                             "aquamarine2"]
+        self.__listColorClassique = ["light slate gray",
+                             "red",
+                             "hot pink",
+                             "light sky blue",
+                             "orange",
+                             "chartreuse4",
+                             "yellow2",
+                             "HotPink3",
+                             "DodgerBlue3",
+                             "SlateBlue3",
+                             "goldenrod3",
+                             "PaleGreen2",
+                             "orchid4",
+                             "magenta4",
+                             "tan4",
+                             "sea green"]
+        self.__listColorNaruto = ["maroon1",
+                             "coral2",
+                             "dark orange",
+                             "goldenrod1",
+                             "NavajoWhite3",
+                             "dodger blue",
+                             "azure4",
+                             "firebrick3",
+                             "LightSteelBlue3",
+                             "SkyBlue2",
+                             "DarkOlivegreen2",
+                             "salmon3",
+                             "HotPink2",
+                             "red",
+                             "cyan2",
+                             "DeepSkyBlue3"]
+        
+        # Themes
+        self.__themeAstro = (self.image(self.__bgAstro, 1440, 900), self.__listColorAstro, self.randomPng(self.__listAstro))
+        self.__themeNaruto = (self.image(self.__bgNaruto, 1440, 900), self.__listColorNaruto, self.randomPng(self.__listNaruto))
+        self.__themeClassique = (self.image(self.__bgClassique, 1440, 900), self.__listColorClassique, self.randomPng(self.__listClassique))
+        self.__themeActuel = self.__themeAstro
+        
+        # Tkinter root
         self.__root = Tk(className=" KAMON GAME")
         self.__root.geometry("1440x900")
         
@@ -20,10 +112,10 @@ class Menu:
         self.__joinCode = ""
         self.__createCode = ""
         
-        ########## Background ##########
-        self.__bg = Canvas(self.__root, width=1440, height=900, bg="#404040")
-        self.__bg.place(x=720, y=450, anchor="center")
-        self.__bgImage = self.image("assets/background/naruto.jpg", 1440, 900)
+        # Background root
+        self.__bg = Canvas(self.__root, width=1440, height=900)
+        self.__bg.place(x=0, y=0)
+        self.__bgImage = self.image(self.__bgAstro, 1440, 900)
         self.__bg.create_image(720, 450, image = self.__bgImage) 
          
         ########## Label Kamon ##########
@@ -31,7 +123,7 @@ class Menu:
         self.__labelKamon.place(x=720, y=200, anchor="center")
         self.__labelKamonConfig = [720, 200]
         ########## Boutton 1vs1 ##########
-        self.__button1vs1 = Button(self.__root, text='1 vs 1', font=("Helvetica", 24, "bold"), fg=self.__fgColor, bg=self.__bgColor, command=lambda: [self.changeDisplay([self.__labelKamon, self.__button1vs1, self.__button1vsBot, self.__button1vs1online, self.__buttonSettingsKamon, self.__buttonQuitGame], [self.__canvasBoard, self.__buttonBreak], [self.__canvasBoardConfig, self.__buttonBreakConfig]), self.startGame(91, 40)], pady=1, height=2, width=20, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__button1vs1 = Button(self.__root, text='1 vs 1', font=("Helvetica", 24, "bold"), fg=self.__fgColor, bg=self.__bgColor, command=lambda: [self.changeDisplay([self.__labelKamon, self.__button1vs1, self.__button1vsBot, self.__button1vs1online, self.__buttonSettingsKamon, self.__buttonQuitGame], [self.__canvasBoard, self.__buttonBreak], [self.__canvasBoardConfig, self.__buttonBreakConfig]), self.startGame(37, 70)], pady=1, height=2, width=20, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__button1vs1.place(x=720, y=400, anchor="center")
         self.__button1vs1Config = [720, 400]
         ########## Boutton 1vsBot ##########
@@ -76,7 +168,7 @@ class Menu:
         self.__buttonBreak = Button(self.__root, text='⎥⎪', font=("Helvetica", 24, "bold"), fg=self.__fgColor, bg=self.__bgColor, command=lambda: self.changeDisplay([self.__buttonBreak, self.__canvasBoard], [self.__labelBreak, self.__buttonBackBreak, self.__buttonSettingsBreak, self.__buttonRestart, self.__buttonSaveGame, self.__buttonQuit], [self.__labelBreakConfig, self.__buttonBackBreakConfig, self.__buttonSettingsBreakConfig, self.__buttonRestartConfig, self.__buttonSaveGameConfig, self.__buttonQuitConfig]), pady=1, height=2, width=3, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonBreakConfig = [1300, 100]
         ########## Board Game ##########
-        self.__canvasBoard = Canvas(self.__root, width=1200, height=890, highlightthickness=0, highlightbackground=self.__bdColor, bg="#404040")
+        self.__canvasBoard = Canvas(self.__root, width=1200, height=890, highlightthickness=0, highlightbackground=self.__bdColor, bg="#202020")
         self.__canvasBoardConfig = [605, 450]
         
         ########## Label Break ##########
@@ -111,85 +203,10 @@ class Menu:
         ########## Boutton Retour Settings Menu ##########
         self.__buttonBackSettingsMenu = Button(self.__root, text='Back', font=("Helvetica", 24, "bold"), fg=self.__fgColor, bg=self.__bgColor, command=lambda: self.changeDisplay([self.__labelSettingsMenu, self.__buttonBackSettingsMenu], [self.__labelKamon, self.__button1vs1, self.__button1vsBot, self.__button1vs1online, self.__buttonSettingsKamon, self.__buttonQuitGame], [self.__labelKamonConfig, self.__button1vs1Config, self.__button1vsBotConfig, self.__button1vs1onlineConfig, self.__buttonSettingsKamonConfig, self.__buttonQuitGameConfig]), pady=1, height=2, width=3, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonBackSettingsMenuConfig = [100, 100]
-        
-        # Liste de symboles
-        self.__listSymb1 = ["",
-                            self.image("assets/symbole/astro/bélier.png", 100, 100),
-                            self.image("assets/symbole/astro/cancer.png", 100, 100),
-                            self.image("assets/symbole/astro/capricorne.png", 100, 100),
-                            self.image("assets/symbole/astro/gémeaux.png", 100, 100),
-                            self.image("assets/symbole/astro/lion.png", 100, 100),
-                            self.image("assets/symbole/astro/balance.png", 100, 100)]
-        
-        self.__listSymb2 = ["",
-                            self.image("assets/symbole/classique/bird.png", 80, 80),
-                            self.image("assets/symbole/classique/butterfly.png", 80, 80),
-                            self.image("assets/symbole/classique/door.png", 80, 80),
-                            self.image("assets/symbole/classique/fan.png", 80, 80),
-                            self.image("assets/symbole/classique/fish.png", 80, 80),
-                            self.image("assets/symbole/classique/mountain.png", 80, 80)]
-        
-        self.__listSymb3 = ["",
-                            self.image("assets/symboleNoir/naruto/cascade.png", 80, 80),
-                            self.image("assets/symboleNoir/naruto/eau.png", 80, 80),
-                            self.image("assets/symboleNoir/naruto/feu.png", 80, 80),
-                            self.image("assets/symboleNoir/naruto/herbe.png", 80, 80),
-                            self.image("assets/symboleNoir/naruto/neige.png", 80, 80),
-                            self.image("assets/symboleNoir/naruto/son.png", 80, 80)]
-        
-        self.__listColor1 = ["red",
-                             "DarkGoldenrod2",
-                             "CadetBlue2",
-                             "DarkOliveGreen3",
-                             "DarkOrange1",
-                             "DarkOrchid3",
-                             "DarkSeaGreen3",
-                             "DeepSkyBlue3",
-                             "HotPink2",
-                             "MediumOrchid1",
-                             "MediumPurple3",
-                             "OliveDrab4",
-                             "coral1",
-                             "DarkSlateGray4",
-                             "RoyalBlue2",
-                             "aquamarine2"]
-        
-        self.__listColor2 = ["light slate gray",
-                             "red",
-                             "hot pink",
-                             "light sky blue",
-                             "orange",
-                             "chartreuse4",
-                             "yellow2",
-                             "HotPink3",
-                             "DodgerBlue3",
-                             "SlateBlue3",
-                             "goldenrod3",
-                             "PaleGreen2",
-                             "orchid4",
-                             "magenta4",
-                             "tan4",
-                             "sea green"]
-        
-        self.__listColor3 = ["",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             "",
-                             ""]
-        
+
         self.__colorBoard = "black"
-        self.__colorPlayer1 = "yellow"
+        self.__bgCase = "#404040"
+        self.__colorPlayer1 = "white"
         self.__colorPlayer2 = "black"
         
         self.__root.mainloop()
@@ -230,7 +247,21 @@ class Menu:
     #------------------------------------  
         
     def startGame(self, boardSize, rayon):
-        turn = GameTurn(self.__canvasBoard, self.__canvasBoardConfig, boardSize, rayon, self.__listSymb2, self.__listColor2, self.__colorBoard, self.__colorPlayer1, self.__colorPlayer2)
+        turn = GameTurn(self.__canvasBoard, self.__canvasBoardConfig, boardSize, rayon, self.__themeActuel[2], self.__themeActuel[1], self.__colorBoard, self.__colorPlayer1, self.__colorPlayer2, self.__bgCase)
         turn.displayBoard()
+    
+    #------------------------------------   
+    # Creer une liste aleatoire de 7 png
+    #------------------------------------  
+    
+    def randomPng(self, listPng):
+        random.shuffle(listPng)
+        sixPng = [""]
+        for i in range(6):
+            sixPng.append(listPng[i])
+        return sixPng
+    
+    def changeTheme(self, theme):
+        self.__themeActuel = theme
     
 Menu()

@@ -158,8 +158,8 @@ class Board:
     # Coordonnées d'un cercle
     #------------------------------------
         
-    def generateCoordCircle(self, x, y):
-        return [(x-0.65*self.__rayon, y-0.65*self.__rayon), (x+0.65*self.__rayon, y+0.65*self.__rayon)]
+    def generateCoordCircle(self, x, y, rayon):
+        return [(x-0.60*rayon, y-0.60*rayon), (x+0.60*rayon, y+0.60*rayon)]
     
     #------------------------------------
     # Deplacement de case en case
