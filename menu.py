@@ -25,7 +25,7 @@ class Menu:
         self.__bg.place(x=720, y=450, anchor="center")
         self.__bgImage = self.image("assets/background/naruto.jpg", 1440, 900)
         self.__bg.create_image(720, 450, image = self.__bgImage) 
-        
+         
         ########## Label Kamon ##########
         self.__labelKamon = Label(self.__root, text="KAMON", font=("Helvetica", 70, "bold"), fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__labelKamon.place(x=720, y=200, anchor="center")

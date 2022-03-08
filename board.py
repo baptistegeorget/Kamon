@@ -3,7 +3,7 @@ from math import *
 import random
 
 class Board: 
-    
+     
     #------------------------------------   
     # Constructeur
     #------------------------------------   

@@ -3,7 +3,7 @@ from board import Board
 from tkinter import *
 import math
 from math import *
-
+ 
 class GameTurn:
     
     #------------------------------------   
@@ -27,10 +27,12 @@ class GameTurn:
         self.__lastHit = ()
         
         # Joueur actuel
-        self.__player1 = [colorPlayer1, 1]
-        self.__player2 = [colorPlayer2, 2]
-        self.__player = self.__player1[1]
-        self.__colorPlayer = self.__player1[0]
+        self.__player1 = 1
+        self.__player2 = 2
+        self.__colorPlayer1 = colorPlayer1
+        self.__colorPlayer2 = colorPlayer2
+        self.__player = self.__player1
+        self.__colorPlayer = self.__colorPlayer1
     
     #------------------------------------   
     # Affichage du plateau
@@ -98,16 +100,18 @@ class GameTurn:
         value[2] = self.__colorPlayer
         self.__lastHit = (value[1][0], value[1][1])
         listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon-1/10*self.__rayon)
+        listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1])
         self.__canvasBoard.create_polygon(listCoordCorner, fill="", outline=self.__colorPlayer, width=1.6/10*self.__rayon)
+        self.__canvasBoard.create_oval(listCoordCircle, fill="", outline=self.__colorPlayer, width=15)
         
     #------------------------------------   
     # Changement de joueur
     #------------------------------------  
         
     def changePlayer(self):
-        if self.__player == self.__player1[1]:
-            self.__player = self.__player2[1]
-            self.__colorPlayer = self.__player2[0]
+        if self.__player == self.__player1:
+            self.__player = self.__player2
+            self.__colorPlayer = self.__colorPlayer2
         else:
-            self.__player = self.__player1[1]
-            self.__colorPlayer = self.__player1[0]
+            self.__player = self.__player1
+            self.__colorPlayer = self.__colorPlayer1
