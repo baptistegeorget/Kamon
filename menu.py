@@ -1,16 +1,19 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from gameTurn import GameTurn
-import random
 
 class Menu: 
     
     def __init__(self):
         
+        # Tkinter root
+        self.__root = Tk(className=" KAMON GAME")
+        self.__root.geometry("1440x900")
+        
         # Liste des background par theme
-        self.__bgAstro = "assets/background/astro.png"
-        self.__bgClassique = "assets/background/classique.png"
-        self.__bgNaruto = "assets/background/naruto.png"
+        self.__bgAstro = self.image("assets/background/astro.png", 1440, 900)
+        self.__bgClassique = self.image("assets/background/classique.png", 1440, 900)
+        self.__bgByScott = self.image("assets/background/byscott.png", 1440, 900)
         
         # Liste des png par theme
         self.__listAstro = ["assets/symbole/astro/balance.png",
@@ -25,22 +28,23 @@ class Menu:
                                 "assets/symbole/astro/taureau.png",
                                 "assets/symbole/astro/verseau.png",
                                 "assets/symbole/astro/vierge.png"]
+        
         self.__listClassique = ["assets/symbole/classique/bird.png",
                                 "assets/symbole/classique/butterfly.png",
                                 "assets/symbole/classique/door.png",
                                 "assets/symbole/classique/fan.png",
                                 "assets/symbole/classique/fish.png",
                                 "assets/symbole/classique/mountain.png"]
-        self.__listNaruto = ["assets/symbole/naruto/cascade.png",
-                                "assets/symbole/naruto/eau.png",
-                                "assets/symbole/naruto/feu.png",
-                                "assets/symbole/naruto/foudre.png",
-                                "assets/symbole/naruto/herbe.png",
-                                "assets/symbole/naruto/neige.png",
-                                "assets/symbole/naruto/pluie.png",
-                                "assets/symbole/naruto/son.png",
-                                "assets/symbole/naruto/terre.png",
-                                "assets/symbole/naruto/vent.png"]
+        
+        self.__listByScott = ["assets/symbole/byscott/cascade.png",
+                                "assets/symbole/byscott/eau.png",
+                                "assets/symbole/byscott/foudre.png",
+                                "assets/symbole/byscott/herbe.png",
+                                "assets/symbole/byscott/neige.png",
+                                "assets/symbole/byscott/pluie.png",
+                                "assets/symbole/byscott/son.png",
+                                "assets/symbole/byscott/terre.png",
+                                "assets/symbole/byscott/vent.png"]
         
         # Liste des couleurs par theme
         self.__listColorAstro = ["red",
@@ -59,6 +63,7 @@ class Menu:
                              "DarkSlateGray4",
                              "RoyalBlue2",
                              "aquamarine2"]
+        
         self.__listColorClassique = ["light slate gray",
                              "red",
                              "hot pink",
@@ -75,7 +80,8 @@ class Menu:
                              "magenta4",
                              "tan4",
                              "sea green"]
-        self.__listColorNaruto = ["maroon1",
+        
+        self.__listColorByScott = ["maroon1",
                              "coral2",
                              "dark orange",
                              "goldenrod1",
@@ -93,14 +99,10 @@ class Menu:
                              "DeepSkyBlue3"]
         
         # Themes
-        self.__themeAstro = (self.image(self.__bgAstro, 1440, 900), self.__listColorAstro, self.randomPng(self.__listAstro))
-        self.__themeNaruto = (self.image(self.__bgNaruto, 1440, 900), self.__listColorNaruto, self.randomPng(self.__listNaruto))
-        self.__themeClassique = (self.image(self.__bgClassique, 1440, 900), self.__listColorClassique, self.randomPng(self.__listClassique))
-        self.__themeActuel = self.__themeAstro
-        
-        # Tkinter root
-        self.__root = Tk(className=" KAMON GAME")
-        self.__root.geometry("1440x900")
+        self.__themeAstro = (self.__bgAstro, self.__listColorAstro, self.__listAstro)
+        self.__themeByScott = (self.__bgByScott, self.__listColorByScott, self.__listByScott)
+        self.__themeClassique = (self.__bgClassique, self.__listColorClassique, self.__listClassique)
+        self.__themeActuel = self.__themeClassique
         
         ########## Styles ##########
         self.__fgColor = "orange"
@@ -115,7 +117,7 @@ class Menu:
         # Background root
         self.__bg = Canvas(self.__root, width=1440, height=900)
         self.__bg.place(x=0, y=0)
-        self.__bgImage = self.image(self.__bgAstro, 1440, 900)
+        self.__bgImage = self.__themeActuel[0]
         self.__bg.create_image(720, 450, image = self.__bgImage) 
          
         ########## Label Kamon ##########
@@ -251,15 +253,8 @@ class Menu:
         turn.displayBoard()
     
     #------------------------------------   
-    # Creer une liste aleatoire de 7 png
-    #------------------------------------  
-    
-    def randomPng(self, listPng):
-        random.shuffle(listPng)
-        sixPng = [""]
-        for i in range(6):
-            sixPng.append(listPng[i])
-        return sixPng
+    # Change le theme
+    #------------------------------------ 
     
     def changeTheme(self, theme):
         self.__themeActuel = theme

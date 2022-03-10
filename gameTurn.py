@@ -47,7 +47,7 @@ class GameTurn:
             self.__canvasBoard.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvasBoard.create_image(value[0][0], value[0][1], image=value[1][0])
         self.__canvasBoard.update()
-        
+    
     #------------------------------------   
     # Tours de jeu
     #------------------------------------ 

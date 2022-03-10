@@ -1,6 +1,7 @@
 import math
 from math import *
 import random
+from PIL import Image, ImageTk
 
 class Board: 
      
@@ -108,10 +109,18 @@ class Board:
         dic[coordKey] = [position]
         coordKey = list(coordKey)
     
+    # Creer une liste aleatoire de 7 png
+    def randomPng(self, listPng):
+        random.shuffle(listPng)
+        sixPng = [""]
+        for i in range(6):
+            sixPng.append(self.image(listPng[i], round((self.__centerX+0.60*self.__rayon)-(self.__centerX-0.60*self.__rayon)), round((self.__centerY+0.60*self.__rayon)-(self.__centerY-0.60*self.__rayon))))
+        return sixPng
+    
     # Création des couleurs et des symboles
     def colorSymb(self, listSymb, listColor):
         case = []
-        symb = listSymb
+        symb = self.randomPng(listSymb)
         for i in range(1, 7):
             for j in range((self.__boardSize-1)//6):
                 case += [(symb[i], listColor[j+1])]
@@ -172,3 +181,12 @@ class Board:
             return (x, self.__height*deplacement+y)
         if axe == "s":
             return (-(self.__rayon*1.5)*deplacement+x, -(self.__height/2)*deplacement+y)
+        
+    #------------------------------------   
+    # Changer la taille d'une image
+    #------------------------------------  
+
+    def image(self, image, width, height):
+        file = Image.open(image)
+        file = file.resize((width, height), Image.ANTIALIAS)
+        return ImageTk.PhotoImage(file)
