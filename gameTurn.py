@@ -54,8 +54,9 @@ class GameTurn:
         
     def gameTurn(self, event):
         key = self.where(event.x, event.y)
+        value = self.__dic[key]
         if self.possible(key):
-            self.put(key)
+            self.put(value)
             self.changePlayer()
     
     #------------------------------------   
@@ -95,8 +96,7 @@ class GameTurn:
     # Ajoute un pion et enregistre le coup
     #------------------------------------  
            
-    def put(self, key):
-        value = self.__dic[key]
+    def put(self, value):
         value[2] = self.__colorPlayer
         self.__lastHit = (value[1][0], value[1][1])
         listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
