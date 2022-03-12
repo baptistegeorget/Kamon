@@ -54,22 +54,32 @@ class GameTurn:
         
     def gameTurn(self, event):
         key = self.where(event.x, event.y)
-        value = self.__dic[key]
-        if self.possible(key):
-            self.put(value)
-            self.changePlayer()
+        if key != "no":
+            value = self.__dic[key]
+            if self.startOrPossible(key):
+                self.put(value)
+                self.changePlayer()
     
+    #------------------------------------   
+    # Premier coup ou possible
+    #------------------------------------ 
+    
+    def startOrPossible(self, key):
+        if self.__lastHit == ():
+            return ((key[0] == 3 or key[0] == -3) and (key[1] != 3 or key[1] != -3) and (key[2] != 3 or key[2] != -3)) ^ ((key[1] == 3 or key[1] == -3) and (key[2] != 3 or key[2] != -3) and (key[0] != 3 or key[0] != -3)) ^ ((key[2] == 3 or key[2] == -3) and (key[1] != 3 or key[1] != -3) and (key[0] != 3 or key[0] != -3))
+        if self.__lastHit != ():
+            return self.possible(key)
+        
     #------------------------------------   
     # Possible ?
     #------------------------------------ 
     
     def possible(self, key):
-        if key != "no":
-            value = self.__dic[key]
-            if value[1][0] != "":
-                if value[2] == "vide":
-                    if self.__lastHit == () or self.__lastHit[0] == value[1][0] or self.__lastHit[1] == value[1][1]:
-                        return True
+        value = self.__dic[key]
+        if value[1][0] != "":
+            if value[2] == "vide":
+                if self.__lastHit == () or self.__lastHit[0] == value[1][0] or self.__lastHit[1] == value[1][1]:
+                    return True
         return False
                 
     #------------------------------------   

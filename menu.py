@@ -6,16 +6,25 @@ class Menu:
     
     def __init__(self):
         
+        #------------------------------------ 
         # Tkinter root
+        #------------------------------------ 
+        
         self.__root = Tk(className=" KAMON GAME")
         self.__root.geometry("1440x900")
         
+        #------------------------------------ 
         # Liste des background par theme
+        #------------------------------------ 
+        
         self.__bgAstro = self.image("assets/background/astro.png", 1440, 900)
         self.__bgClassique = self.image("assets/background/classique.png", 1440, 900)
         self.__bgByScott = self.image("assets/background/byscott.png", 1440, 900)
         
+        #------------------------------------ 
         # Liste des png par theme
+        #------------------------------------ 
+        
         self.__listAstro = ["assets/symbole/astro/balance.png",
                                 "assets/symbole/astro/bélier.png",
                                 "assets/symbole/astro/cancer.png",
@@ -46,7 +55,10 @@ class Menu:
                                 "assets/symbole/byscott/terre.png",
                                 "assets/symbole/byscott/vent.png"]
         
+        #------------------------------------ 
         # Liste des couleurs par theme
+        #------------------------------------ 
+        
         self.__listColorAstro = ["red",
                              "DarkGoldenrod2",
                              "CadetBlue2",
@@ -98,7 +110,10 @@ class Menu:
                              "cyan2",
                              "DeepSkyBlue3"]
         
+        #------------------------------------ 
         # Themes
+        #------------------------------------ 
+        
         self.__themeAstro = (self.__bgAstro, self.__listColorAstro, self.__listAstro)
         self.__themeByScott = (self.__bgByScott, self.__listColorByScott, self.__listByScott)
         self.__themeClassique = (self.__bgClassique, self.__listColorClassique, self.__listClassique)
