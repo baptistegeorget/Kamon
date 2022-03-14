@@ -21,6 +21,7 @@ class GameTurn:
         self.__borderdWidth = 5
         self.__board = Board(rayon, boardSize, canvasConfig[0], canvasConfig[1], listSymb, listColor)
         self.__dic = self.__board.getDic()
+        self.__ring = self.__board.getRing()
         self.__colorBoard = colorBoard
         
         # Dernier coups joué
@@ -56,7 +57,7 @@ class GameTurn:
         key = self.where(event.x, event.y)
         if key != "no":
             value = self.__dic[key]
-            if self.startOrPossible(key):
+            if self.startOrPossible(key, self.__ring):
                 self.put(value)
                 self.changePlayer()
     
@@ -64,9 +65,9 @@ class GameTurn:
     # Premier coup ou possible
     #------------------------------------ 
     
-    def startOrPossible(self, key):
+    def startOrPossible(self, key, ring):
         if self.__lastHit == ():
-            return ((key[0] == 3 or key[0] == -3) and (key[1] != 3 or key[1] != -3) and (key[2] != 3 or key[2] != -3)) ^ ((key[1] == 3 or key[1] == -3) and (key[2] != 3 or key[2] != -3) and (key[0] != 3 or key[0] != -3)) ^ ((key[2] == 3 or key[2] == -3) and (key[1] != 3 or key[1] != -3) and (key[0] != 3 or key[0] != -3))
+            return ((key[0] == ring or key[0] == -ring) and (key[1] != ring or key[1] != -ring) and (key[2] != ring or key[2] != -ring)) ^ ((key[1] == ring or key[1] == -ring) and (key[2] != ring or key[2] != -ring) and (key[0] != ring or key[0] != -ring)) ^ ((key[2] == ring or key[2] == -ring) and (key[1] != ring or key[1] != -ring) and (key[0] != ring or key[0] != -ring))
         if self.__lastHit != ():
             return self.possible(key)
         

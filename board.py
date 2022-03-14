@@ -45,12 +45,12 @@ class Board:
     #------------------------------------
     
     def ring(self):
-        x = 1
-        ring = 1
-        while x != self.__boardSize:
-            x += 6*ring
-            ring += 1
-        return ring
+        if self.__boardSize == 37:
+            return 3
+        if self.__boardSize == 61:
+            return 4
+        if self.__boardSize == 91:
+            return 5
     
     #------------------------------------
     # Dictionnaire de cases
@@ -62,7 +62,7 @@ class Board:
         position = (self.__centerX, self.__centerY)
         coordKey = [0, 0, 0]
         self.addDic(dic, coordKey, position)
-        for i in range(1, self.__ring):
+        for i in range(self.__ring+1):
             for _ in range(i):
                 coordKey[1] -= 1
                 coordKey[2] += 1
