@@ -117,30 +117,30 @@ class Menu:
         self.__themeAstro = (self.__bgAstro, self.__listColorAstro, self.__listAstro)
         self.__themeByScott = (self.__bgByScott, self.__listColorByScott, self.__listByScott)
         self.__themeClassique = (self.__bgClassique, self.__listColorClassique, self.__listClassique)
-        self.__themeActuel = self.__themeByScott
+        self.__themeActuel = self.__themeClassique
         
         ########## Styles ##########
-        self.__fgColor = "orange"
+        self.__fgColor = "#404040"
         self.__bgColor = "white"
         self.__bdSize = 5
-        self.__bdColor = "orange"
+        self.__bdColor = "#404040"
         
         ########## Codes ##########
         self.__joinCode = ""
         self.__createCode = ""
         
         # Background root
-        self.__bg = Canvas(self.__root, width=1440, height=900)
-        self.__bg.place(x=0, y=0)
+        self.__bg = Canvas(self.__root, width=1440, height=900, highlightthickness=0)
+        self.__bg.place(x=720, y=450, anchor="center")
         self.__bgImage = self.__themeActuel[0]
-        self.__bg.create_image(715, 445, image = self.__bgImage) 
+        self.__bg.create_image(720, 450, image = self.__bgImage) 
          
         ########## Label Kamon ##########
         self.__labelKamon = Label(self.__root, text="KAMON", font=("Helvetica", 70, "bold"), fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__labelKamon.place(x=720, y=200, anchor="center")
         self.__labelKamonConfig = [720, 200]
         ########## Boutton 1vs1 ##########
-        self.__button1vs1 = Button(self.__root, text='1 vs 1', font=("Helvetica", 24, "bold"), fg=self.__fgColor, bg=self.__bgColor, command=lambda: [self.changeDisplay([self.__labelKamon, self.__button1vs1, self.__button1vsBot, self.__button1vs1online, self.__buttonSettingsKamon, self.__buttonQuitGame], [self.__canvasBoard, self.__buttonBreak], [self.__canvasBoardConfig, self.__buttonBreakConfig]), self.startGame(91, 40)], pady=1, height=2, width=20, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__button1vs1 = Button(self.__root, text='1 vs 1', font=("Helvetica", 24, "bold"), fg=self.__fgColor, bg=self.__bgColor, command=lambda: [self.changeDisplay([self.__labelKamon, self.__button1vs1, self.__button1vsBot, self.__button1vs1online, self.__buttonSettingsKamon, self.__buttonQuitGame], [self.__canvasBoard, self.__buttonBreak], [self.__canvasBoardConfig, self.__buttonBreakConfig]), self.startGame(37, 70)], pady=1, height=2, width=20, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__button1vs1.place(x=720, y=400, anchor="center")
         self.__button1vs1Config = [720, 400]
         ########## Boutton 1vsBot ##########

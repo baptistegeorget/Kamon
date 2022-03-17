@@ -66,38 +66,38 @@ class Board:
             for _ in range(i):
                 coordKey[1] -= 1
                 coordKey[2] += 1
-                position = self.axeDeplacement("r", -1, position[0], position[1])
+                position = self.axeDeplacement("r", -1.05, position[0], position[1])
                 self.addDic(dic, coordKey, position)
             for _ in range(i):
                 coordKey[2] -= 1
                 coordKey[0] += 1
-                position = self.axeDeplacement("s", -1, position[0], position[1])
+                position = self.axeDeplacement("s", -1.05, position[0], position[1])
                 self.addDic(dic, coordKey, position)
             for _ in range(i):
                 coordKey[2] -= 1
                 coordKey[1] += 1
-                position = self.axeDeplacement("r", 1, position[0], position[1])
+                position = self.axeDeplacement("r", 1.05, position[0], position[1])
                 self.addDic(dic, coordKey, position)
             for _ in range(i):
                 coordKey[0] -= 1
                 coordKey[1] += 1
-                position = self.axeDeplacement("q", -1, position[0], position[1])
+                position = self.axeDeplacement("q", -1.05, position[0], position[1])
                 self.addDic(dic, coordKey, position)
             for _ in range(i):
                 coordKey[0] -= 1
                 coordKey[2] += 1
-                position = self.axeDeplacement("s", 1, position[0], position[1])
+                position = self.axeDeplacement("s", 1.05, position[0], position[1])
                 self.addDic(dic, coordKey, position)
             for _ in range(i):
                 coordKey[1] -= 1
                 coordKey[2] += 1
-                position = self.axeDeplacement("r", -1, position[0], position[1])
+                position = self.axeDeplacement("r", -1.05, position[0], position[1])
                 self.addDic(dic, coordKey, position)
             if i > 1:
                 for _ in range(i-1):
                     coordKey[1] -= 1
                     coordKey[0] += 1
-                    position = self.axeDeplacement("q", 1, position[0], position[1])
+                    position = self.axeDeplacement("q", 1.05, position[0], position[1])
                     self.addDic(dic, coordKey, position)
             position = (self.__centerX, self.__centerY)
             coordKey = [0, 0, 0]

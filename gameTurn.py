@@ -34,7 +34,7 @@ class GameTurn:
         self.__colorPlayer2 = colorPlayer2
         self.__player = self.__player1
         self.__colorPlayer = self.__colorPlayer1
-    
+        
     #------------------------------------   
     # Affichage du plateau
     #------------------------------------  
@@ -47,6 +47,7 @@ class GameTurn:
             self.__canvasBoard.create_polygon(listCoordCorner, fill=self.__bgCase, outline=self.__colorBoard, width=self.__borderdWidth)
             self.__canvasBoard.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvasBoard.create_image(value[0][0], value[0][1], image=value[1][0])
+            self.__canvasBoard.create_polygon(listCoordCorner, fill="", outline=self.__colorBoard, width=self.__borderdWidth, activeoutline="yellow")
         self.__canvasBoard.update()
     
     #------------------------------------   
