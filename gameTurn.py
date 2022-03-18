@@ -23,6 +23,7 @@ class GameTurn:
         self.__dic = self.__board.getDic()
         self.__ring = self.__board.getRing()
         self.__colorBoard = colorBoard
+        self.__listColor = listColor
         
         # Dernier coups joué
         self.__lastHit = ()
@@ -68,7 +69,7 @@ class GameTurn:
     
     def startOrPossible(self, key, ring):
         if self.__lastHit == ():
-            return ((key[0] == ring or key[0] == -ring) and (key[1] != ring or key[1] != -ring) and (key[2] != ring or key[2] != -ring)) ^ ((key[1] == ring or key[1] == -ring) and (key[2] != ring or key[2] != -ring) and (key[0] != ring or key[0] != -ring)) ^ ((key[2] == ring or key[2] == -ring) and (key[1] != ring or key[1] != -ring) and (key[0] != ring or key[0] != -ring))
+            return self.possible(key) and (((key[0] == ring or key[0] == -ring) and (key[1] != ring or key[1] != -ring) and (key[2] != ring or key[2] != -ring)) ^ ((key[1] == ring or key[1] == -ring) and (key[2] != ring or key[2] != -ring) and (key[0] != ring or key[0] != -ring)) ^ ((key[2] == ring or key[2] == -ring) and (key[1] != ring or key[1] != -ring) and (key[0] != ring or key[0] != -ring)))
         if self.__lastHit != ():
             return self.possible(key)
         
@@ -78,8 +79,8 @@ class GameTurn:
     
     def possible(self, key):
         value = self.__dic[key]
-        if value[1][0] != "":
-            if value[2] == "vide":
+        if value[1][1] != self.__listColor[0]:
+            if value[2] == 0:
                 if self.__lastHit == () or self.__lastHit[0] == value[1][0] or self.__lastHit[1] == value[1][1]:
                     return True
         return False

@@ -2,6 +2,7 @@ import math
 from math import *
 import random
 from PIL import Image, ImageTk
+from case import Case
 
 class Board: 
      
@@ -53,102 +54,118 @@ class Board:
             return 5
     
     #------------------------------------
-    # Dictionnaire de cases
+    # Créer une liste de clé 
     #------------------------------------
     
-    # Création des clés et des coordonnées
-    def generateCoord(self):
-        dic = {}
-        position = (self.__centerX, self.__centerY)
+    def listCoordKey(self):
+        listCoordKey = []
         coordKey = [0, 0, 0]
-        self.addDic(dic, coordKey, position)
-        for i in range(self.__ring+1):
+        self.addList(listCoordKey, coordKey)
+        for i in range(1, self.__ring+1):
             for _ in range(i):
                 coordKey[1] -= 1
                 coordKey[2] += 1
-                position = self.axeDeplacement("r", -1.1, position[0], position[1])
-                self.addDic(dic, coordKey, position)
+            self.addList(listCoordKey, coordKey)
             for _ in range(i):
                 coordKey[2] -= 1
                 coordKey[0] += 1
-                position = self.axeDeplacement("s", -1.1, position[0], position[1])
-                self.addDic(dic, coordKey, position)
+                self.addList(listCoordKey, coordKey)
             for _ in range(i):
                 coordKey[2] -= 1
                 coordKey[1] += 1
-                position = self.axeDeplacement("r", 1.1, position[0], position[1])
-                self.addDic(dic, coordKey, position)
+                self.addList(listCoordKey, coordKey)
             for _ in range(i):
                 coordKey[0] -= 1
                 coordKey[1] += 1
-                position = self.axeDeplacement("q", -1.1, position[0], position[1])
-                self.addDic(dic, coordKey, position)
+                self.addList(listCoordKey, coordKey)
             for _ in range(i):
                 coordKey[0] -= 1
                 coordKey[2] += 1
-                position = self.axeDeplacement("s", 1.1, position[0], position[1])
-                self.addDic(dic, coordKey, position)
+                self.addList(listCoordKey, coordKey)
             for _ in range(i):
                 coordKey[1] -= 1
                 coordKey[2] += 1
-                position = self.axeDeplacement("r", -1.1, position[0], position[1])
-                self.addDic(dic, coordKey, position)
+                self.addList(listCoordKey, coordKey)
             if i > 1:
                 for _ in range(i-1):
                     coordKey[1] -= 1
                     coordKey[0] += 1
-                    position = self.axeDeplacement("q", 1.1, position[0], position[1])
-                    self.addDic(dic, coordKey, position)
-            position = (self.__centerX, self.__centerY)
+                    self.addList(listCoordKey, coordKey)
             coordKey = [0, 0, 0]
-        return dic
+        return listCoordKey
     
-    # Ajouts des clés et des coordonnées
-    def addDic(self, dic, coordKey, position):
+    def addList(self, listCoordKey, coordKey):
         coordKey = tuple(coordKey)
-        dic[coordKey] = [position]
+        listCoordKey.append(coordKey)
         coordKey = list(coordKey)
     
-    # Creer une liste aleatoire de 7 png
-    def randomPng(self, listPng):
-        random.shuffle(listPng)
-        sixPng = [""]
-        for i in range(6):
-            sixPng.append(self.image(listPng[i], round((self.__centerX+0.60*self.__rayon)-(self.__centerX-0.60*self.__rayon)), round((self.__centerY+0.60*self.__rayon)-(self.__centerY-0.60*self.__rayon))))
-        return sixPng
+    #------------------------------------
+    # Creer une liste d'aspect 
+    #------------------------------------
     
-    # Création des couleurs et des symboles
-    def colorSymb(self, listSymb, listColor):
-        case = []
-        symb = self.randomPng(listSymb)
+    def listAspect(self, listSymb, listColor):
+        listAspect = []
+        listRandomSymb = self.randomSymb(listSymb)
         for i in range(1, 7):
             for j in range((self.__boardSize-1)//6):
-                case += [(symb[i], listColor[j+1])]
-        case += [(symb[0], listColor[0])]
-        return case
+                listAspect += [(listRandomSymb[i], listColor[j+1])]
+        listAspect += [(listRandomSymb[0], listColor[0])]
+        random.shuffle(listAspect)
+        return listAspect
     
-    # Ajouts des couleurs et des symboles   
-    def addColorSymb(self, listSymb, dic, listColor):
-        case = self.colorSymb(listSymb, listColor)
-        listKey = []
-        for key in dic:
-            listKey.append(key)
-        random.shuffle(listKey)
-        x = 0
-        for i in range(len(listKey)):
-            dic[listKey[i]] += [case[x]]
-            x += 1
+    def randomSymb(self, listSymb):
+        random.shuffle(listSymb)
+        sevenSymb = [""]
+        for i in range(6):
+            sevenSymb.append(self.image(listSymb[i], round((self.__centerX+0.60*self.__rayon)-(self.__centerX-0.60*self.__rayon)), round((self.__centerY+0.60*self.__rayon)-(self.__centerY-0.60*self.__rayon))))
+        return sevenSymb
     
-    # Ajouts de l'état des cases
-    def addState(self, dic):
-        for value in dic.values():
-            value += ["vide"]
-            
-    # Création du dictionnaire
+    #------------------------------------
+    # Creer une liste de position
+    #------------------------------------
+    
+    def listPosition(self):
+        listPosition = []
+        position = (self.__centerX, self.__centerY)
+        listPosition.append(position)
+        for i in range(1, self.__ring+1):
+            for _ in range(i):
+                position = self.axeDeplacement("r", -1.1, position[0], position[1])
+            listPosition.append(position)
+            for _ in range(i):
+                position = self.axeDeplacement("s", -1.1, position[0], position[1])
+                listPosition.append(position)
+            for _ in range(i):
+                position = self.axeDeplacement("r", 1.1, position[0], position[1])
+                listPosition.append(position)
+            for _ in range(i):
+                position = self.axeDeplacement("q", -1.1, position[0], position[1])
+                listPosition.append(position)
+            for _ in range(i):
+                position = self.axeDeplacement("s", 1.1, position[0], position[1])
+                listPosition.append(position)
+            for _ in range(i):
+                position = self.axeDeplacement("r", -1.1, position[0], position[1])
+                listPosition.append(position)
+            if i > 1:
+                for _ in range(i-1):
+                    position = self.axeDeplacement("q", 1.1, position[0], position[1])
+                    listPosition.append(position)
+            position = (self.__centerX, self.__centerY)
+        return listPosition
+    
+    #------------------------------------
+    # Créer un dictionnaire
+    #------------------------------------
+    
     def createDic(self, listSymb, listColor):
-        dic = self.generateCoord()
-        self.addColorSymb(listSymb, dic, listColor)
-        self.addState(dic)
+        dic = {}
+        listAspect = self.listAspect(listSymb, listColor)
+        listPosition = self.listPosition()
+        listCoordKey = self.listCoordKey()
+        for i in range(self.__boardSize):
+            case = Case(listPosition[i], listAspect[i])
+            dic[listCoordKey[i]] = case.getCase()
         return dic
             
     #------------------------------------
