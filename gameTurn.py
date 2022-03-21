@@ -15,6 +15,8 @@ class GameTurn:
         self.__canvas = canvas
         self.__canvas.bind('<Button-1>', self.gameTurn)
         self.__backgroundImage = backgroundImage
+        self.__canvasConfig = canvasConfig
+        self.__pause = False
         
         # Objet 
         self.__bgCase = bgCase
@@ -39,12 +41,22 @@ class GameTurn:
         self.__colorPlayer = self.__colorPlayer1
         
     #------------------------------------   
+    # Met le jeu en pause
+    #------------------------------------  
+        
+    def setPause(self):
+        if self.__pause == True:
+            self.__pause = False
+        else:
+            self.__pause = True
+        
+    #------------------------------------   
     # Affichage du plateau
     #------------------------------------  
     
     def displayBoard(self):
         self.__canvas.delete(ALL)
-        self.__canvas.create_image(0, 0, image = self.__backgroundImage, anchor = "nw")
+        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__backgroundImage, anchor = "center")
         for value in self.__dic.values():
             listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon)
             listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.6)
@@ -52,6 +64,11 @@ class GameTurn:
             self.__canvas.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
             self.__canvas.create_polygon(listCoordCorner, fill="", outline="", width=self.__borderdWidth, activeoutline="yellow")
+            if value[2] != 0:
+                listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
+                listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.7)
+                self.__canvas.create_polygon(listCoordCorner, fill="", outline=value[2], width=0.2*self.__rayon)
+                self.__canvas.create_oval(listCoordCircle, fill="", outline=value[2], width=0.25*self.__rayon)
         self.__canvas.update()
     
     #------------------------------------   
@@ -60,10 +77,11 @@ class GameTurn:
         
     def gameTurn(self, event):
         key = self.where(event.x, event.y)
-        if key != "no":
+        if key != "no" and self.__pause != True:
             value = self.__dic[key]
             if self.startOrPossible(key, self.__ring):
                 self.put(value)
+                self.displayBoard()
                 self.changePlayer()
     
     #------------------------------------   
@@ -115,10 +133,6 @@ class GameTurn:
     def put(self, value):
         value[2] = self.__colorPlayer
         self.__lastHit = (value[1][0], value[1][1])
-        listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
-        listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.7)
-        self.__canvas.create_polygon(listCoordCorner, fill="", outline=self.__colorPlayer, width=0.2*self.__rayon)
-        self.__canvas.create_oval(listCoordCircle, fill="", outline=self.__colorPlayer, width=0.25*self.__rayon)
         
     #------------------------------------   
     # Changement de joueur
