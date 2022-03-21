@@ -9,19 +9,21 @@ class GameTurn:
     # Constructeur
     #------------------------------------  
     
-    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, colorPlayer1, colorPlayer2, bgCase):
+    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, colorPlayer1, colorPlayer2, bgCase, backgroundImage):
         
         # Le canvas
-        self.__canvasBoard = canvas
-        self.__canvasBoard.bind('<Button-1>', self.gameTurn)
+        self.__canvas = canvas
+        self.__canvas.bind('<Button-1>', self.gameTurn)
+        self.__backgroundImage = backgroundImage
         
-        # Objet board
+        # Objet 
         self.__bgCase = bgCase
         self.__rayon = rayon
         self.__borderdWidth = 5
         self.__board = Board(rayon, boardSize, canvasConfig[0], canvasConfig[1], listSymb, listColor)
         self.__dic = self.__board.getDic()
         self.__ring = self.__board.getRing()
+        self.__height = self.__board.getHeight()
         self.__colorBoard = colorBoard
         self.__listColor = listColor
         
@@ -41,15 +43,16 @@ class GameTurn:
     #------------------------------------  
     
     def displayBoard(self):
-        self.__canvasBoard.delete(ALL)
+        self.__canvas.delete(ALL)
+        self.__canvas.create_image(0, 0, image = self.__backgroundImage, anchor = "nw")
         for value in self.__dic.values():
             listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon)
-            listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon)
-            self.__canvasBoard.create_polygon(listCoordCorner, fill=self.__bgCase, outline=self.__colorBoard, width=self.__borderdWidth)
-            self.__canvasBoard.create_oval(listCoordCircle, fill=value[1][1], width=0)
-            self.__canvasBoard.create_image(value[0][0], value[0][1], image=value[1][0])
-            self.__canvasBoard.create_polygon(listCoordCorner, fill="", outline=self.__colorBoard, width=self.__borderdWidth, activeoutline="yellow")
-        self.__canvasBoard.update()
+            listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.6)
+            self.__canvas.create_polygon(listCoordCorner, fill=self.__bgCase, outline=self.__colorBoard, width=self.__borderdWidth)
+            self.__canvas.create_oval(listCoordCircle, fill=value[1][1], width=0)
+            self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
+            self.__canvas.create_polygon(listCoordCorner, fill="", outline="", width=self.__borderdWidth, activeoutline="yellow")
+        self.__canvas.update()
     
     #------------------------------------   
     # Tours de jeu
@@ -91,7 +94,7 @@ class GameTurn:
                 
     def where(self, x, y):
         for value in self.__dic.values():
-            if math.sqrt((value[0][0] - x)*(value[0][0] - x) + (value[0][1] - y)*(value[0][1] - y)) < self.__board.getHeight()/2:
+            if math.sqrt((value[0][0] - x)*(value[0][0] - x) + (value[0][1] - y)*(value[0][1] - y)) < self.__height/2:
                 key = self.getKey(value)
                 return key
         return "no"
@@ -113,9 +116,9 @@ class GameTurn:
         value[2] = self.__colorPlayer
         self.__lastHit = (value[1][0], value[1][1])
         listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
-        listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*1.2)
-        self.__canvasBoard.create_polygon(listCoordCorner, fill="", outline=self.__colorPlayer, width=0.2*self.__rayon)
-        self.__canvasBoard.create_oval(listCoordCircle, fill="", outline=self.__colorPlayer, width=0.25*self.__rayon)
+        listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.7)
+        self.__canvas.create_polygon(listCoordCorner, fill="", outline=self.__colorPlayer, width=0.2*self.__rayon)
+        self.__canvas.create_oval(listCoordCircle, fill="", outline=self.__colorPlayer, width=0.25*self.__rayon)
         
     #------------------------------------   
     # Changement de joueur

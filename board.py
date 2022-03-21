@@ -12,37 +12,30 @@ class Board:
     
     def __init__(self, rayon, boardSize, centerX, centerY, listSymb, listColor):
         
-        # Hexagone
         self.__rayon = rayon
         self.__height = math.sqrt(3)*rayon
-        
-        # Plateau
         self.__boardSize = boardSize
         self.__centerX = centerX
         self.__centerY = centerY
         self.__ring = self.ring()
-        
-        # Case
-        self.__dic = self.createDic(listSymb, listColor)
+        self.__listSymb = listSymb
+        self.__listColor = listColor
     
     #------------------------------------   
-    # Les getter
+    # Renvoie les données du plateau
     #------------------------------------
     
     def getDic(self):
-        return self.__dic
+        return self.createDic(self.__listSymb, self.__listColor)
     
     def getHeight(self):
         return self.__height
-    
-    def getRayon(self):
-        return self.__rayon
     
     def getRing(self):
         return self.__ring
     
     #------------------------------------
-    # Anneaux
+    # Calcule le nombre d'anneaux
     #------------------------------------
     
     def ring(self):
@@ -54,7 +47,7 @@ class Board:
             return 5
     
     #------------------------------------
-    # Créer une liste de clé 
+    # Créer une liste de clés pour le dictionnaire
     #------------------------------------
     
     def listCoordKey(self):
@@ -100,7 +93,7 @@ class Board:
         coordKey = list(coordKey)
     
     #------------------------------------
-    # Creer une liste d'aspect 
+    # Creer une liste d'aspect pour le dictionnaire
     #------------------------------------
     
     def listAspect(self, listSymb, listColor):
@@ -121,7 +114,7 @@ class Board:
         return sevenSymb
     
     #------------------------------------
-    # Creer une liste de position
+    # Creer une liste de position pour le dictionnaire
     #------------------------------------
     
     def listPosition(self):
@@ -169,7 +162,7 @@ class Board:
         return dic
             
     #------------------------------------
-    # Coordonnées des coins d'un hexagone
+    # Calcule les coordonnées des coins d'un hexagone
     #------------------------------------
     
     def generateCoordCorner(self, x, y, rayon):
@@ -181,14 +174,14 @@ class Board:
                 (rayon*math.cos(pi/3)+x, -(rayon*math.sin(pi/3))+y)]
         
     #------------------------------------
-    # Coordonnées d'un cercle
+    # Calcule les coordonnées pour tracer un cercle
     #------------------------------------
         
     def generateCoordCircle(self, x, y, rayon):
-        return [(x-0.60*rayon, y-0.60*rayon), (x+0.60*rayon, y+0.60*rayon)]
+        return [(x-rayon, y-rayon), (x+rayon, y+rayon)]
     
     #------------------------------------
-    # Deplacement de case en case
+    # Calcule un déplacement sur les vecteurs (q, r, s)
     #------------------------------------
     
     def axeDeplacement(self, axe, deplacement, x, y):
@@ -200,7 +193,7 @@ class Board:
             return (-(self.__rayon*1.5)*deplacement+x, -(self.__height/2)*deplacement+y)
         
     #------------------------------------   
-    # Changer la taille d'une image
+    # Fonction pour utiliser un png
     #------------------------------------  
 
     def image(self, image, width, height):
