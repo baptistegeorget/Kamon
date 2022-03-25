@@ -2,6 +2,7 @@ from board import Board
 from tkinter import *
 import math
 from math import *
+from player import Player
  
 class GameTurn:
     
@@ -9,7 +10,7 @@ class GameTurn:
     # Constructeur
     #------------------------------------  
     
-    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, colorPlayer1, colorPlayer2, bgCase, backgroundImage):
+    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage):
         
         # Le canvas
         self.__canvas = canvas
@@ -33,13 +34,10 @@ class GameTurn:
         self.__lastHit = ()
         
         # Joueur actuel
-        self.__player1 = 1
-        self.__player2 = 2
-        self.__colorPlayer1 = colorPlayer1
-        self.__colorPlayer2 = colorPlayer2
-        self.__player = self.__player1
-        self.__colorPlayer = self.__colorPlayer1
-        
+        self.__player1 = Player(1).getPlayer()
+        self.__player2 = Player(2).getPlayer()
+        self.__playerActuel = self.__player1 
+                
     #------------------------------------   
     # Met le jeu en pause
     #------------------------------------  
@@ -67,9 +65,19 @@ class GameTurn:
             if value[2] != 0:
                 listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
                 listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.7)
-                self.__canvas.create_polygon(listCoordCorner, fill="", outline=value[2], width=0.2*self.__rayon)
-                self.__canvas.create_oval(listCoordCircle, fill="", outline=value[2], width=0.25*self.__rayon)
+                self.__canvas.create_polygon(listCoordCorner, fill="", outline=self.colorPlayer(value[2]), width=0.2*self.__rayon)
+                self.__canvas.create_oval(listCoordCircle, fill="", outline=self.colorPlayer(value[2]), width=0.25*self.__rayon)
         self.__canvas.update()
+    
+    #------------------------------------   
+    # Renvoie la couleur de pion des joueurs
+    #------------------------------------ 
+    
+    def colorPlayer(self, value):
+        if value == self.__player1[0]:
+            return self.__player1[1]
+        else:
+            return self.__player2[1]
     
     #------------------------------------   
     # Tours de jeu
@@ -83,6 +91,7 @@ class GameTurn:
                 self.put(value)
                 self.displayBoard()
                 self.changePlayer()
+                print(self.__dic)
     
     #------------------------------------   
     # Premier coup ou possible
@@ -131,7 +140,7 @@ class GameTurn:
     #------------------------------------  
            
     def put(self, value):
-        value[2] = self.__colorPlayer
+        value[2] = self.__playerActuel[0]
         self.__lastHit = (value[1][0], value[1][1])
         
     #------------------------------------   
@@ -139,9 +148,7 @@ class GameTurn:
     #------------------------------------  
         
     def changePlayer(self):
-        if self.__player == self.__player1:
-            self.__player = self.__player2
-            self.__colorPlayer = self.__colorPlayer2
+        if self.__playerActuel == self.__player1:
+            self.__playerActuel = self.__player2
         else:
-            self.__player = self.__player1
-            self.__colorPlayer = self.__colorPlayer1
+            self.__playerActuel = self.__player1

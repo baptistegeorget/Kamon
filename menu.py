@@ -251,11 +251,8 @@ class Menu:
         self.__pageBack = self.__pageAccueil
         self.__pageBackConfig = self.__pageAccueilConfig
 
-
         self.__colorBoard = "black"
-        self.__bgCase = "#404040"
-        self.__colorPlayer1 = "white"
-        self.__colorPlayer2 = "black"
+        self.__bgCase = "#636262"
         
         self.__joinCode = None
         self.__createCode = None
@@ -310,7 +307,7 @@ class Menu:
     def startGame(self, boardSize, rayon):
         self.__boardSize = boardSize
         self.__rayon = rayon
-        self.__turn = GameTurn(self.__canvas, self.__canvasConfig, boardSize, rayon, self.__themeActuel[2], self.__themeActuel[1], self.__colorBoard, self.__colorPlayer1, self.__colorPlayer2, self.__bgCase, self.__themeActuel[0])
+        self.__turn = GameTurn(self.__canvas, self.__canvasConfig, boardSize, rayon, self.__themeActuel[2], self.__themeActuel[1], self.__colorBoard, self.__bgCase, self.__themeActuel[0])
         self.__turn.displayBoard()
     
     #------------------------------------   
