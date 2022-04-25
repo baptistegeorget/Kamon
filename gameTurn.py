@@ -3,6 +3,7 @@ from tkinter import *
 import math
 from math import *
 from player import Player
+import copy
  
 class GameTurn:
     
@@ -11,7 +12,6 @@ class GameTurn:
     #------------------------------------  
     
     def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage):
-        
         # Le canvas
         self.__canvas = canvas
         self.__canvas.bind('<Button-1>', self.gameTurn)
@@ -55,13 +55,15 @@ class GameTurn:
     def displayBoard(self):
         self.__canvas.delete(ALL)
         self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__backgroundImage, anchor = "center")
-        for value in self.__dic.values():
+        for key in self.__dic:
+            value = self.__dic[key]
             listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon)
             listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.6)
             self.__canvas.create_polygon(listCoordCorner, fill=self.__bgCase, outline=self.__colorBoard, width=self.__borderdWidth)
             self.__canvas.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
             self.__canvas.create_polygon(listCoordCorner, fill="", outline="", width=self.__borderdWidth, activeoutline="yellow")
+            self.__canvas.create_text(value[0][0], value[0][1], text=key)
             if value[2] != 0:
                 listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
                 listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.7)
@@ -90,8 +92,9 @@ class GameTurn:
             if self.startOrPossible(key, self.__ring):
                 self.put(value)
                 self.displayBoard()
+                if self.verifSide() == True:
+                    print("Gagné")
                 self.changePlayer()
-                print(self.__dic)
     
     #------------------------------------   
     # Premier coup ou possible
@@ -100,7 +103,7 @@ class GameTurn:
     def startOrPossible(self, key, ring):
         if self.__lastHit == ():
             return self.possible(key) and (((key[0] == ring or key[0] == -ring) and (key[1] != ring or key[1] != -ring) and (key[2] != ring or key[2] != -ring)) ^ ((key[1] == ring or key[1] == -ring) and (key[2] != ring or key[2] != -ring) and (key[0] != ring or key[0] != -ring)) ^ ((key[2] == ring or key[2] == -ring) and (key[1] != ring or key[1] != -ring) and (key[0] != ring or key[0] != -ring)))
-        if self.__lastHit != ():
+        else:
             return self.possible(key)
         
     #------------------------------------   
@@ -152,3 +155,76 @@ class GameTurn:
             self.__playerActuel = self.__player2
         else:
             self.__playerActuel = self.__player1
+            
+    def keyDeplacement(self, axe, deplacement, cle):
+        key = copy.deepcopy(cle)
+        if axe == "q":
+            key[0] = key[0]+deplacement
+            key[1] = key[1]-deplacement
+            return key
+        if axe == "r":
+            key[1] = key[1]+deplacement
+            key[2] = key[2]-deplacement
+            return key
+        if axe == "s":
+            key[2] = key[2]+deplacement
+            key[0] = key[0]-deplacement
+            return key
+    
+    #verifier si toute les cases sont jouées
+    def verifEgal(self):
+        for value in self.__dic.values():
+            if value[1][1] != self.__listColor[0] and value[2] == 0:
+                return True 
+        return False
+    
+    #verifier si le joueur peut jouer
+    def verifAgainPlayer(self):
+        for value in self.__dic.values():
+            if value[1][0] == self.__lastHit[0] or value[1][1] == self.__lastHit[1]:
+                return True
+        return False
+    
+    #verifier si les cases rejoignent deux bords
+    def verifSide(self):
+        side = False
+        for key in self.__dic:
+            if self.__dic[key][2] == self.__playerActuel[0] and (abs(key[0]) == self.__ring or abs(key[1]) == self.__ring or abs(key[2]) == self.__ring):
+                listKey = []
+                if self.voisinSide(list(key), listKey, list(key)) == True:
+                    side = True
+        return side
+    
+    def voisinSide(self, key, listKey, saveKey):
+        if (key not in listKey) and (tuple(key) in self.__dic) and (self.__dic[tuple(key)][2] == self.__playerActuel[0]) and (abs(saveKey[0]) == self.__ring and saveKey[0] == -key[0]) or (abs(saveKey[1]) == self.__ring and saveKey[1] == -key[1]) or (abs(saveKey[2]) == self.__ring and saveKey[2] == -key[2]):
+            return True
+        listKey.append(key)
+        dep1 = ["r", "q", "s", "r", "q", "s"]
+        dep2 = [-1, 1, -1, 1, -1, 1]
+        for i in range(6):                                       
+            func = self.keyDeplacement(dep1[i], dep2[i], key)
+            if (tuple(func) in self.__dic) and (func not in listKey) and (self.__dic[tuple(func)][2] == self.__playerActuel[0]):
+                if self.voisinSide(func, listKey, saveKey) == True:
+                    return True
+        
+    #verifier si les cases emprisonnent une case adverse
+    def verifTrap(self):
+        trap = False
+        for key in self.__dic:
+            if self.__dic[key][2] != self.__playerActuel[0] and (key[0] != abs(self.__ring) and key[1] != abs(self.__ring) and key[2] != abs(self.__ring)):
+                listKey = []
+                if self.voisinTrap(list(key), listKey) != False:
+                    trap = True
+        return trap
+        
+    def voisinTrap(self, key, listKey):
+        listKey.append(key)
+        dep1 = ["r", "q", "s", "r", "q", "s"]
+        dep2 = [-1, 1, -1, 1, -1, 1]
+        for i in range(6):
+            func = self.keyDeplacement(dep1[i], dep2[i], key)
+            if (tuple(func) in self.__dic) and (func not in listKey) and (self.__dic[tuple(func)][2] != self.__playerActuel[0]) and (func[0] == abs(self.__ring) or func[1] == abs(self.__ring) or func[2] == abs(self.__ring)):
+                return False
+            elif (tuple(func) in self.__dic) and (func not in listKey) and (self.__dic[tuple(func)][2] != self.__playerActuel[0]):
+                if self.voisinTrap(func, listKey) == False:
+                    return False

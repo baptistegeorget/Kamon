@@ -27,17 +27,17 @@ class Menu:
         #------------------------------------ 
         
         self.__listAstro = ["assets/symbole/astro/balance.png",
-                                "assets/symbole/astro/bélier.png",
-                                "assets/symbole/astro/cancer.png",
-                                "assets/symbole/astro/capricorne.png",
-                                "assets/symbole/astro/gémeaux.png",
-                                "assets/symbole/astro/lion.png",
-                                "assets/symbole/astro/poisson.png",
-                                "assets/symbole/astro/sagittaire.png",
-                                "assets/symbole/astro/scorpion.png",
-                                "assets/symbole/astro/taureau.png",
-                                "assets/symbole/astro/verseau.png",
-                                "assets/symbole/astro/vierge.png"]
+                            "assets/symbole/astro/bélier.png",
+                            "assets/symbole/astro/cancer.png",
+                            "assets/symbole/astro/capricorne.png",
+                            "assets/symbole/astro/gémeaux.png",
+                            "assets/symbole/astro/lion.png",
+                            "assets/symbole/astro/poisson.png",
+                            "assets/symbole/astro/sagittaire.png",
+                            "assets/symbole/astro/scorpion.png",
+                            "assets/symbole/astro/taureau.png",
+                            "assets/symbole/astro/verseau.png",
+                            "assets/symbole/astro/vierge.png"]
         
         self.__listClassique = ["assets/symbole/classique/bird.png",
                                 "assets/symbole/classique/butterfly.png",
@@ -47,69 +47,69 @@ class Menu:
                                 "assets/symbole/classique/mountain.png"]
         
         self.__listByScott = ["assets/symbole/byscott/cascade.png",
-                                "assets/symbole/byscott/eau.png",
-                                "assets/symbole/byscott/foudre.png",
-                                "assets/symbole/byscott/herbe.png",
-                                "assets/symbole/byscott/neige.png",
-                                "assets/symbole/byscott/pluie.png",
-                                "assets/symbole/byscott/son.png",
-                                "assets/symbole/byscott/terre.png",
-                                "assets/symbole/byscott/vent.png"]
+                              "assets/symbole/byscott/eau.png",
+                              "assets/symbole/byscott/foudre.png",
+                              "assets/symbole/byscott/herbe.png",
+                              "assets/symbole/byscott/neige.png",
+                              "assets/symbole/byscott/pluie.png",
+                              "assets/symbole/byscott/son.png",
+                              "assets/symbole/byscott/terre.png",
+                              "assets/symbole/byscott/vent.png"]
         
         #------------------------------------ 
         # Liste des couleurs par theme
         #------------------------------------ 
         
         self.__listColorAstro = ["red",
-                             "DarkGoldenrod2",
-                             "CadetBlue2",
-                             "DarkOliveGreen3",
-                             "DarkOrange1",
-                             "DarkOrchid3",
-                             "DarkSeaGreen3",
-                             "DeepSkyBlue3",
-                             "HotPink2",
-                             "MediumOrchid1",
-                             "MediumPurple3",
-                             "OliveDrab4",
-                             "coral1",
-                             "DarkSlateGray4",
-                             "RoyalBlue2",
-                             "aquamarine2"]
+                                 "DarkGoldenrod2",
+                                 "CadetBlue2",
+                                 "DarkOliveGreen3",
+                                 "DarkOrange1",
+                                 "DarkOrchid3",
+                                 "DarkSeaGreen3",
+                                 "DeepSkyBlue3",
+                                 "HotPink2",
+                                 "MediumOrchid1",
+                                 "MediumPurple3",
+                                 "OliveDrab4",
+                                 "coral1",
+                                 "DarkSlateGray4",
+                                 "RoyalBlue2",
+                                 "aquamarine2"]
         
         self.__listColorClassique = ["light slate gray",
-                             "red",
-                             "hot pink",
-                             "light sky blue",
-                             "orange",
-                             "chartreuse4",
-                             "yellow2",
-                             "HotPink3",
-                             "DodgerBlue3",
-                             "SlateBlue3",
-                             "goldenrod3",
-                             "PaleGreen2",
-                             "orchid4",
-                             "magenta4",
-                             "tan4",
-                             "sea green"]
+                                     "red",
+                                     "hot pink",
+                                     "light sky blue",
+                                     "orange",
+                                     "chartreuse4",
+                                     "yellow2",
+                                     "HotPink3",
+                                     "DodgerBlue3",
+                                     "SlateBlue3",
+                                     "goldenrod3",
+                                     "PaleGreen2",
+                                     "orchid4",
+                                     "magenta4",
+                                     "tan4",
+                                     "sea green"]
         
         self.__listColorByScott = ["maroon1",
-                             "coral2",
-                             "dark orange",
-                             "goldenrod1",
-                             "NavajoWhite3",
-                             "dodger blue",
-                             "azure4",
-                             "firebrick3",
-                             "LightSteelBlue3",
-                             "SkyBlue2",
-                             "DarkOlivegreen2",
-                             "salmon3",
-                             "HotPink2",
-                             "red",
-                             "cyan2",
-                             "DeepSkyBlue3"]
+                                   "coral2",
+                                   "dark orange",
+                                   "goldenrod1",
+                                   "NavajoWhite3",
+                                   "dodger blue",
+                                   "azure4",
+                                   "firebrick3",
+                                   "LightSteelBlue3",
+                                   "SkyBlue2",
+                                   "DarkOlivegreen2",
+                                   "salmon3",
+                                   "HotPink2",
+                                   "red",
+                                   "cyan2",
+                                   "DeepSkyBlue3"]
         
         #------------------------------------ 
         # Themes
@@ -172,8 +172,8 @@ class Menu:
         
         self.__button1vs1 = Button(self.__root, text='1 vs 1', command=lambda: self.changeDisplay(self.__pageSizeBoard, self.__pageSizeBoardConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__button1vs1Config = [720, 400]
-        self.__button1vsBot = Button(self.__root, text='1 vs ordi', command=lambda: self.changeDisplay(self.__pageSizeBoard, self.__pageSizeBoardConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__button1vsBotConfig = [720, 500]
+        self.__button1vsIA = Button(self.__root, text='1 vs IA', command=lambda: self.changeDisplay(self.__pageSizeBoard, self.__pageSizeBoardConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__button1vsIAConfig = [720, 500]
         self.__button1vs1online = Button(self.__root, text='1 vs 1 en ligne', command=lambda: self.changeDisplay(self.__pageOnline, self.__pageOnlineConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__button1vs1onlineConfig = [720, 600]
         self.__buttonSettings = Button(self.__root, bitmap="assets/logo/parametre.png", command=lambda: self.changeDisplay(self.__pageSettings, self.__pageSettingsConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
@@ -211,7 +211,7 @@ class Menu:
         
         self.__labelBreak = Label(self.__root, text="PAUSE", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__labelBreakConfig = [720, 200]
-        self.__labelSettings = Label(self.__root, text="PARAMETRE", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__labelSettings = Label(self.__root, text="PARAMETRES", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__labelSettingsConfig = [720, 200]
         self.__labelOnline = Label(self.__root, text="PARTIE PRIVEE", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__labelOnlineConfig = [720, 200]
@@ -227,8 +227,8 @@ class Menu:
         # Pages et configuration
         #------------------------------------ 
         
-        self.__pageAccueil = [self.__button1vs1, self.__button1vsBot, self.__button1vs1online, self.__buttonSettings, self.__buttonQuitGame]
-        self.__pageAccueilConfig =  [self.__button1vs1Config, self.__button1vsBotConfig, self.__button1vs1onlineConfig, self.__buttonSettingsConfig, self.__buttonQuitGameConfig]
+        self.__pageAccueil = [self.__button1vs1, self.__button1vsIA, self.__button1vs1online, self.__buttonSettings, self.__buttonQuitGame]
+        self.__pageAccueilConfig =  [self.__button1vs1Config, self.__button1vsIAConfig, self.__button1vs1onlineConfig, self.__buttonSettingsConfig, self.__buttonQuitGameConfig]
         
         self.__pageSettings = [self.__labelSettings, self.__buttonBack, self.__buttonAstro, self.__buttonClassique, self.__buttonByScott]
         self.__pageSettingsConfig = [self.__labelSettingsConfig, self.__buttonBackConfig, self.__buttonAstroConfig, self.__buttonClassiqueConfig, self.__buttonByScottConfig]

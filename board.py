@@ -186,11 +186,11 @@ class Board:
     
     def axeDeplacement(self, axe, deplacement, x, y):
         if axe == "q":
-            return (self.__rayon*1.5*deplacement+x, -(self.__height/2)*deplacement+y)
+            return (round(self.__rayon*1.5*deplacement+x), round(-(self.__height/2)*deplacement+y))
         if axe == "r":
-            return (x, self.__height*deplacement+y)
+            return (round(x), round(self.__height*deplacement+y))
         if axe == "s":
-            return (-(self.__rayon*1.5)*deplacement+x, -(self.__height/2)*deplacement+y)
+            return (round(-(self.__rayon*1.5)*deplacement+x), round(-(self.__height/2)*deplacement+y))
         
     #------------------------------------   
     # Fonction pour utiliser un png
