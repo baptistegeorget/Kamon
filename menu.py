@@ -118,7 +118,7 @@ class Menu:
         self.__themeAstro = (self.__bgAstro, self.__listColorAstro, self.__listAstro)
         self.__themeByScott = (self.__bgByScott, self.__listColorByScott, self.__listByScott)
         self.__themeClassique = (self.__bgClassique, self.__listColorClassique, self.__listClassique)
-        self.__themeActuel = self.__themeByScott
+        self.__themeActuel = self.__themeAstro
         
         #------------------------------------ 
         # Le canvas
@@ -186,9 +186,9 @@ class Menu:
         self.__buttonJoinConfig = [550, 400]
         self.__buttonCreate = Button(self.__root, text='Créer', command=lambda: self.getCreateText(), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonCreateConfig = [550, 500]
-        self.__buttonBreak = Button(self.__root, bitmap="assets/logo/pause.png", command=lambda: [self.changeDisplay(self.__pageBreak, self.__pageBreakConfig), self.pause()], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__buttonBreak = Button(self.__root, bitmap="assets/logo/pause.png", command=lambda: [self.changeDisplay(self.__pageBreak, self.__pageBreakConfig), self.pause(True)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonBreakConfig = [1300, 100]
-        self.__buttonResume = Button(self.__root, text='Reprendre', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.pause(), self.__turn.displayBoard()], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__buttonResume = Button(self.__root, text='Reprendre', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.pause(False), self.__turn.displayBoard()], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonResumeConfig = [720, 400]
         self.__buttonRestart = Button(self.__root, text='Recommencer', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.startGame(self.__boardSize, self.__rayon)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonRestartConfig = [720, 500]
@@ -208,6 +208,8 @@ class Menu:
         self.__buttonByScottConfig = [700, 300]
         self.__buttonClassique = Button(self.__root, text='Theme Classique', command=lambda: [self.changeTheme(self.__themeClassique), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonClassiqueConfig = [950, 300]
+        self.__buttonWinScreen = Button(self.__root, bitmap="assets/logo/croix.png", command=lambda: [self.changeDisplay(self.__pageAccueil, self.__pageAccueilConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__buttonWinScreenConfig = [1300, 100]
         
         self.__labelBreak = Label(self.__root, text="PAUSE", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__labelBreakConfig = [720, 200]
@@ -250,7 +252,7 @@ class Menu:
         
         self.__pageBack = self.__pageAccueil
         self.__pageBackConfig = self.__pageAccueilConfig
-
+        
         self.__colorBoard = "black"
         self.__bgCase = "#636262"
         
@@ -287,6 +289,7 @@ class Menu:
     def delDisplay(self):
         for i in range(len(self.__pageActuel)):
             self.__pageActuel[i].place_forget()
+        self.__buttonWinScreen.place_forget()
         self.__canvas.delete(ALL)
         self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__themeActuel[0], anchor = "center") 
         
@@ -307,7 +310,7 @@ class Menu:
     def startGame(self, boardSize, rayon):
         self.__boardSize = boardSize
         self.__rayon = rayon
-        self.__turn = GameTurn(self.__canvas, self.__canvasConfig, boardSize, rayon, self.__themeActuel[2], self.__themeActuel[1], self.__colorBoard, self.__bgCase, self.__themeActuel[0])
+        self.__turn = GameTurn(self.__canvas, self.__canvasConfig, boardSize, rayon, self.__themeActuel[2], self.__themeActuel[1], self.__colorBoard, self.__bgCase, self.__themeActuel[0], self.__buttonWinScreen, self.__buttonWinScreenConfig)
         self.__turn.displayBoard()
     
     #------------------------------------   
@@ -329,8 +332,8 @@ class Menu:
     # Met le jeu sur pause
     #------------------------------------ 
     
-    def pause(self):
-        self.__turn.setPause()
+    def pause(self, set):
+        self.__turn.setPause(set)
     
 menu = Menu()
 menu.startKamon()

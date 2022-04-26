@@ -4,6 +4,7 @@ import math
 from math import *
 from player import Player
 import copy
+from winScreen import WinScreen
  
 class GameTurn:
     
@@ -11,13 +12,15 @@ class GameTurn:
     # Constructeur
     #------------------------------------  
     
-    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage):
+    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage, buttonBreak, buttonBreakConfig):
         # Le canvas
         self.__canvas = canvas
         self.__canvas.bind('<Button-1>', self.gameTurn)
         self.__backgroundImage = backgroundImage
         self.__canvasConfig = canvasConfig
         self.__pause = False
+        self.__buttonBreak = buttonBreak
+        self.__buttonBreakConfig = buttonBreakConfig
         
         # Objet 
         self.__bgCase = bgCase
@@ -42,11 +45,8 @@ class GameTurn:
     # Met le jeu en pause
     #------------------------------------  
         
-    def setPause(self):
-        if self.__pause == True:
-            self.__pause = False
-        else:
-            self.__pause = True
+    def setPause(self, set):
+        self.__pause = set
         
     #------------------------------------   
     # Affichage du plateau
@@ -63,7 +63,6 @@ class GameTurn:
             self.__canvas.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
             self.__canvas.create_polygon(listCoordCorner, fill="", outline="", width=self.__borderdWidth, activeoutline="yellow")
-            self.__canvas.create_text(value[0][0], value[0][1], text=key)
             if value[2] != 0:
                 listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon*0.9)
                 listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.7)
@@ -92,8 +91,14 @@ class GameTurn:
             if self.startOrPossible(key, self.__ring):
                 self.put(value)
                 self.displayBoard()
-                if self.verifSide() == True:
-                    print("Gagné")
+                if (self.verifSide() or self.verifTrap() or self.verifAgainPlayer() == False):
+                    self.__pause = True
+                    winScreen = WinScreen(self.__canvas, self.__canvasConfig, self.__playerActuel[0], self.__backgroundImage, self.__buttonBreak, self.__buttonBreakConfig, "win")
+                    winScreen.displayWinScreen()
+                elif self.verifEgal():
+                    self.__pause = True
+                    winScreen = WinScreen(self.__canvas, self.__canvasConfig, self.__playerActuel[0], self.__backgroundImage, self.__buttonBreak, self.__buttonBreakConfig, "egal")
+                    winScreen.displayWinScreen()
                 self.changePlayer()
     
     #------------------------------------   
@@ -175,8 +180,8 @@ class GameTurn:
     def verifEgal(self):
         for value in self.__dic.values():
             if value[1][1] != self.__listColor[0] and value[2] == 0:
-                return True 
-        return False
+                return False 
+        return True
     
     #verifier si le joueur peut jouer
     def verifAgainPlayer(self):
