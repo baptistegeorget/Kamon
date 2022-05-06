@@ -12,7 +12,7 @@ class GameTurn:
     # Constructeur
     #------------------------------------  
     
-    def __init__(self, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage, buttonBreak, buttonBreakConfig):
+    def __init__(self, func_image, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage, buttonBreak, buttonBreakConfig):
         # Le canvas
         self.__canvas = canvas
         self.__canvas.bind('<Button-1>', self.gameTurn)
@@ -21,12 +21,13 @@ class GameTurn:
         self.__pause = False
         self.__buttonBreak = buttonBreak
         self.__buttonBreakConfig = buttonBreakConfig
+        self.__func_image = func_image
         
         # Objet 
         self.__bgCase = bgCase
         self.__rayon = rayon
         self.__borderdWidth = 5
-        self.__board = Board(rayon, boardSize, canvasConfig[0], canvasConfig[1], listSymb, listColor)
+        self.__board = Board(rayon, boardSize, canvasConfig[0], canvasConfig[1], listSymb, listColor, func_image)
         self.__dic = self.__board.getDic()
         self.__ring = self.__board.getRing()
         self.__height = self.__board.getHeight()
@@ -54,7 +55,7 @@ class GameTurn:
     
     def displayBoard(self):
         self.__canvas.delete(ALL)
-        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__backgroundImage, anchor = "center")
+        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__func_image(self.__backgroundImage, 1440, 900), anchor = "center")
         for key in self.__dic:
             value = self.__dic[key]
             listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon)
@@ -91,7 +92,7 @@ class GameTurn:
             if self.startOrPossible(key, self.__ring):
                 self.put(value)
                 self.displayBoard()
-                if (self.verifSide() or self.verifTrap() or self.verifAgainPlayer() == False):
+                if self.verifSide() == True or self.verifTrap() == True or self.verifAgainPlayer() == False:
                     self.__pause = True
                     winScreen = WinScreen(self.__canvas, self.__canvasConfig, self.__playerActuel[0], self.__backgroundImage, self.__buttonBreak, self.__buttonBreakConfig, "win")
                     winScreen.displayWinScreen()
@@ -186,8 +187,9 @@ class GameTurn:
     #verifier si le joueur peut jouer
     def verifAgainPlayer(self):
         for value in self.__dic.values():
-            if value[1][0] == self.__lastHit[0] or value[1][1] == self.__lastHit[1]:
+            if (value[1][0] == self.__lastHit[0] or value[1][1] == self.__lastHit[1]) and value[2] == 0:
                 return True
+        self.changePlayer()
         return False
     
     #verifier si les cases rejoignent deux bords

@@ -1,158 +1,41 @@
+import PIL.Image, PIL.ImageTk
 from tkinter import *
-from PIL import Image, ImageTk
 from gameTurn import GameTurn
+from themes import Themes
+import os
+import AppKit
+import ctypes
 
 class Menu: 
     
     def __init__(self):
         
-        #------------------------------------ 
-        # Tkinter root
-        #------------------------------------ 
-        
-        self.__root = Tk(className=" KAMON GAME")
-        self.__root.geometry("1440x900")
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Choix de l'OS
+        if os.name == "posix": # Macos, Linux
+            self.__screen = (round(AppKit.NSScreen.screens()[0].frame().size.width), round(AppKit.NSScreen.screens()[0].frame().size.height))
+        elif os.name == "nt": # Windows
+            self.__screen = (round(ctypes.windll.user32.GetSystemMetrics(0)), round(ctypes.windll.user32.GetSystemMetrics(1)))
+        else: # Inconnu
+            self.__screen = (1920, 1080)
+            print("Error: Votre OS n'est pas reconnu.")
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Fenêtre Tkinter #
+        self.__root = Tk(className = " Kamon")
+        self.__root.geometry(str(self.__screen[0])+"x"+str(self.__screen[1]))
         self.__root.attributes('-fullscreen', True)
-        
-        #------------------------------------ 
-        # Liste des background par theme
-        #------------------------------------ 
-        
-        self.__bgAstro = self.image("assets/background/astro.png", 1440, 900)
-        self.__bgClassique = self.image("assets/background/classique.png", 1440, 900)
-        self.__bgByScott = self.image("assets/background/byscott.png", 1440, 900)
-        
-        #------------------------------------ 
-        # Liste des png par theme
-        #------------------------------------ 
-        
-        self.__listAstro = ["assets/symbole/astro/balance.png",
-                            "assets/symbole/astro/bélier.png",
-                            "assets/symbole/astro/cancer.png",
-                            "assets/symbole/astro/capricorne.png",
-                            "assets/symbole/astro/gémeaux.png",
-                            "assets/symbole/astro/lion.png",
-                            "assets/symbole/astro/poisson.png",
-                            "assets/symbole/astro/sagittaire.png",
-                            "assets/symbole/astro/scorpion.png",
-                            "assets/symbole/astro/taureau.png",
-                            "assets/symbole/astro/verseau.png",
-                            "assets/symbole/astro/vierge.png"]
-        
-        self.__listClassique = ["assets/symbole/classique/bird.png",
-                                "assets/symbole/classique/butterfly.png",
-                                "assets/symbole/classique/door.png",
-                                "assets/symbole/classique/fan.png",
-                                "assets/symbole/classique/fish.png",
-                                "assets/symbole/classique/mountain.png"]
-        
-        self.__listByScott = ["assets/symbole/byscott/cascade.png",
-                              "assets/symbole/byscott/eau.png",
-                              "assets/symbole/byscott/foudre.png",
-                              "assets/symbole/byscott/herbe.png",
-                              "assets/symbole/byscott/neige.png",
-                              "assets/symbole/byscott/pluie.png",
-                              "assets/symbole/byscott/son.png",
-                              "assets/symbole/byscott/terre.png",
-                              "assets/symbole/byscott/vent.png"]
-        
-        #------------------------------------ 
-        # Liste des couleurs par theme
-        #------------------------------------ 
-        
-        self.__listColorAstro = ["red",
-                                 "DarkGoldenrod2",
-                                 "CadetBlue2",
-                                 "DarkOliveGreen3",
-                                 "DarkOrange1",
-                                 "DarkOrchid3",
-                                 "DarkSeaGreen3",
-                                 "DeepSkyBlue3",
-                                 "HotPink2",
-                                 "MediumOrchid1",
-                                 "MediumPurple3",
-                                 "OliveDrab4",
-                                 "coral1",
-                                 "DarkSlateGray4",
-                                 "RoyalBlue2",
-                                 "aquamarine2"]
-        
-        self.__listColorClassique = ["light slate gray",
-                                     "red",
-                                     "hot pink",
-                                     "light sky blue",
-                                     "orange",
-                                     "chartreuse4",
-                                     "yellow2",
-                                     "HotPink3",
-                                     "DodgerBlue3",
-                                     "SlateBlue3",
-                                     "goldenrod3",
-                                     "PaleGreen2",
-                                     "orchid4",
-                                     "magenta4",
-                                     "tan4",
-                                     "sea green"]
-        
-        self.__listColorByScott = ["maroon1",
-                                   "coral2",
-                                   "dark orange",
-                                   "goldenrod1",
-                                   "NavajoWhite3",
-                                   "dodger blue",
-                                   "azure4",
-                                   "firebrick3",
-                                   "LightSteelBlue3",
-                                   "SkyBlue2",
-                                   "DarkOlivegreen2",
-                                   "salmon3",
-                                   "HotPink2",
-                                   "red",
-                                   "cyan2",
-                                   "DeepSkyBlue3"]
-        
-        #------------------------------------ 
-        # Themes
-        #------------------------------------ 
-        
-        self.__themeAstro = (self.__bgAstro, self.__listColorAstro, self.__listAstro)
-        self.__themeByScott = (self.__bgByScott, self.__listColorByScott, self.__listByScott)
-        self.__themeClassique = (self.__bgClassique, self.__listColorClassique, self.__listClassique)
-        self.__themeActuel = self.__themeAstro
-        
-        #------------------------------------ 
-        # Le canvas
-        #------------------------------------ 
-        
-        self.__canvasConfig = [720, 450]
-        self.__canvas = Canvas(self.__root, width=1440, height=900, highlightthickness=0)
-        self.__canvas.place(x=self.__canvasConfig[0], y=self.__canvasConfig[1], anchor="center")
-        
-        #------------------------------------ 
-        # Le background
-        #------------------------------------ 
-        
-        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__themeActuel[0], anchor = "center") 
-        
-        #------------------------------------ 
-        # Le logo
-        #------------------------------------ 
-        self.__logoConfig = [720, 200]
-        self.__logoImage = self.image("assets/logo/logo.png", 700, 180)
-        self.__canvas.create_image(self.__logoConfig[0], self.__logoConfig[1], anchor="center", image=self.__logoImage)
-        
-        #------------------------------------ 
-        # L'objet gameTurn
-        #------------------------------------ 
-        
+        self.__root.resizable(False, False)
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Thèmes
+        self.__theme_astro = Themes().get_themes()[0]
+        self.__theme_imaginary = Themes().get_themes()[1]
+        self.__theme_classique = Themes().get_themes()[2]
+        self.__theme_actuel = self.__theme_classique
+        #--------------------------------------------------------------------------------------------------------------------#
         self.__turn = None
         self.__boardSize = None
         self.__rayon = None
-        
-        #------------------------------------ 
-        # Styles
-        #------------------------------------ 
-        
+        #--------------------------------------------------------------------------------------------------------------------#
         self.__fgColor = "black"
         self.__bgColor = "white"
         self.__bdColor = "black"
@@ -165,10 +48,14 @@ class Menu:
         self.__widthSmall = 50
         self.__widthLarge = 20
         self.__widthMedium = 13
-        
-        #------------------------------------ 
-        # Les widgets
-        #------------------------------------ 
+        #--------------------------------------------------------------------------------------------------------------------#
+        self.__canvasConfig = [720, 450]
+        self.__canvas = Canvas(self.__root, width=1440, height=900, highlightthickness=0, background="white")
+        self.__canvas.place(x=self.__canvasConfig[0], y=self.__canvasConfig[1], anchor="center")
+        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.image(self.__theme_actuel["bg"], self.__screen[0], self.__screen[1]), anchor = "center") 
+        self.__logoConfig = [720, 200]
+        self.__logoImage = self.image("assets/logo/logo.png", 700, 180)
+        self.__canvas.create_image(self.__logoConfig[0], self.__logoConfig[1], anchor="center", image=self.__logoImage)
         
         self.__button1vs1 = Button(self.__root, text='1 vs 1', command=lambda: self.changeDisplay(self.__pageSizeBoard, self.__pageSizeBoardConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__button1vs1Config = [720, 400]
@@ -202,11 +89,11 @@ class Menu:
         self.__buttonMoyenConfig = [720, 500]
         self.__buttonGrand = Button(self.__root, text='Grand', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.startGame(91, 40)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonGrandConfig = [720, 600]
-        self.__buttonAstro = Button(self.__root, text='Theme Astro', command=lambda: [self.changeTheme(self.__themeAstro), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__buttonAstro = Button(self.__root, text='Theme Astro', command=lambda: [self.changeTheme(self.__theme_astro), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonAstroConfig = [450, 300]
-        self.__buttonByScott = Button(self.__root, text='Theme ByScott', command=lambda: [self.changeTheme(self.__themeByScott), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__buttonByScott = Button(self.__root, text='Theme ByScott', command=lambda: [self.changeTheme(self.__theme_imaginary), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonByScottConfig = [700, 300]
-        self.__buttonClassique = Button(self.__root, text='Theme Classique', command=lambda: [self.changeTheme(self.__themeClassique), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
+        self.__buttonClassique = Button(self.__root, text='Theme Classique', command=lambda: [self.changeTheme(self.__theme_classique), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonClassiqueConfig = [950, 300]
         self.__buttonWinScreen = Button(self.__root, bitmap="assets/logo/croix.png", command=lambda: [self.changeDisplay(self.__pageAccueil, self.__pageAccueilConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
         self.__buttonWinScreenConfig = [1300, 100]
@@ -258,15 +145,21 @@ class Menu:
         
         self.__joinCode = None
         self.__createCode = None
+        
+        if __name__ == "__main__":
+            self.startKamon()
 
     #------------------------------------   
     # Fonction pour utiliser un png
     #------------------------------------  
 
     def image(self, image, width, height):
-        file = Image.open(image)
-        file = file.resize((width, height), Image.ANTIALIAS)
-        return ImageTk.PhotoImage(file)
+        image = PIL.Image.open(image)
+        image = image.resize((width, height), PIL.Image.ANTIALIAS)
+        image = PIL.ImageTk.PhotoImage(image)
+        label = Label(self.__root, image=image)
+        label.img=image
+        return image
     
     #------------------------------------   
     # Change de page
@@ -291,7 +184,7 @@ class Menu:
             self.__pageActuel[i].place_forget()
         self.__buttonWinScreen.place_forget()
         self.__canvas.delete(ALL)
-        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__themeActuel[0], anchor = "center") 
+        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.image(self.__theme_actuel["bg"], self.__screen[0], self.__screen[1]), anchor = "center") 
         
     #------------------------------------   
     # Récupère les codes 
@@ -310,7 +203,7 @@ class Menu:
     def startGame(self, boardSize, rayon):
         self.__boardSize = boardSize
         self.__rayon = rayon
-        self.__turn = GameTurn(self.__canvas, self.__canvasConfig, boardSize, rayon, self.__themeActuel[2], self.__themeActuel[1], self.__colorBoard, self.__bgCase, self.__themeActuel[0], self.__buttonWinScreen, self.__buttonWinScreenConfig)
+        self.__turn = GameTurn(self.image, self.__canvas, self.__canvasConfig, boardSize, rayon, self.__theme_actuel["list_png"], self.__theme_actuel["list_color"], self.__colorBoard, self.__bgCase, self.__theme_actuel["bg"], self.__buttonWinScreen, self.__buttonWinScreenConfig)
         self.__turn.displayBoard()
     
     #------------------------------------   
@@ -318,7 +211,7 @@ class Menu:
     #------------------------------------ 
     
     def changeTheme(self, theme):
-        self.__themeActuel = theme
+        self.__theme_actuel = theme
        
     #------------------------------------   
     # Lance Kamon
@@ -334,6 +227,5 @@ class Menu:
     
     def pause(self, set):
         self.__turn.setPause(set)
-    
-menu = Menu()
-menu.startKamon()
+        
+Menu()

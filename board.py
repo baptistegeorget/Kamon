@@ -10,8 +10,9 @@ class Board:
     # Constructeur
     #------------------------------------   
     
-    def __init__(self, rayon, boardSize, centerX, centerY, listSymb, listColor):
+    def __init__(self, rayon, boardSize, centerX, centerY, listSymb, listColor, func_image):
         
+        self.__func_image = func_image
         self.__rayon = rayon
         self.__height = math.sqrt(3)*rayon
         self.__boardSize = boardSize
@@ -110,7 +111,7 @@ class Board:
         random.shuffle(listSymb)
         sevenSymb = [""]
         for i in range(6):
-            sevenSymb.append(self.image(listSymb[i], round((self.__centerX+0.60*self.__rayon)-(self.__centerX-0.60*self.__rayon)), round((self.__centerY+0.60*self.__rayon)-(self.__centerY-0.60*self.__rayon))))
+            sevenSymb.append(self.__func_image(listSymb[i], round((self.__centerX+0.60*self.__rayon)-(self.__centerX-0.60*self.__rayon)), round((self.__centerY+0.60*self.__rayon)-(self.__centerY-0.60*self.__rayon))))
         return sevenSymb
     
     #------------------------------------
