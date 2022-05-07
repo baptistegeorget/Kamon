@@ -1,6 +1,6 @@
 import PIL.Image, PIL.ImageTk
-from tkinter import *
-from gameTurn import GameTurn
+from tkinter import Tk, Button, Canvas, Entry, Label, FLAT
+from gameTurn import Game
 from themes import Themes
 import os
 import AppKit
@@ -32,126 +32,108 @@ class Menu:
         self.__theme_classique = Themes().get_themes()[2]
         self.__theme_actuel = self.__theme_classique
         #--------------------------------------------------------------------------------------------------------------------#
-        self.__turn = None
-        self.__boardSize = None
-        self.__rayon = None
+        # L'objet représentant une partie
+        self.__game = None
         #--------------------------------------------------------------------------------------------------------------------#
-        self.__fgColor = "black"
-        self.__bgColor = "white"
-        self.__bdColor = "black"
-        self.__bdSize = 3
-        self.__fontButton = ("Courier", 24, "bold")
-        self.__fontLabel = ("Courier", 70, "bold")
-        self.__fontEntry = ("Helvetica", 24, "bold")
-        self.__heightSmall = 50
-        self.__heightLarge = 2
-        self.__widthSmall = 50
-        self.__widthLarge = 20
-        self.__widthMedium = 13
+        # Paramètrage des widget et du board
+        self.__hlt_widget = 0
+        self.__hlb_widget = "dark slate blue"
+        self.__hlc_widget = "dark slate blue"
+        self.__fg_widget = "dark slate blue"
+        self.__bg_widget = "white"
+        self.__relief_widget = FLAT
+        self.__board_color_outline = "black"
+        self.__board_color = "#555"
+        self.__font_helvetica_24_bold = ("Helvetica", 24, "bold")
+        self.__font_courier_120_bold = ("Courier", 120, "bold")
+        self.__width_50_px = 50
+        self.__height_50_px = 50
+        self.__height_2 = 2
+        self.__width_20 = 20
+        self.__width_13 = 13
+        self.__anchor = "center"
         #--------------------------------------------------------------------------------------------------------------------#
-        self.__canvasConfig = [720, 450]
-        self.__canvas = Canvas(self.__root, width=1440, height=900, highlightthickness=0, background="white")
-        self.__canvas.place(x=self.__canvasConfig[0], y=self.__canvasConfig[1], anchor="center")
-        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.image(self.__theme_actuel["bg"], self.__screen[0], self.__screen[1]), anchor = "center") 
-        self.__logoConfig = [720, 200]
-        self.__logoImage = self.image("assets/logo/logo.png", 700, 180)
-        self.__canvas.create_image(self.__logoConfig[0], self.__logoConfig[1], anchor="center", image=self.__logoImage)
-        
-        self.__button1vs1 = Button(self.__root, text='1 vs 1', command=lambda: self.changeDisplay(self.__pageSizeBoard, self.__pageSizeBoardConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__button1vs1Config = [720, 400]
-        self.__button1vsIA = Button(self.__root, text='1 vs IA', command=lambda: self.changeDisplay(self.__pageSizeBoard, self.__pageSizeBoardConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__button1vsIAConfig = [720, 500]
-        self.__button1vs1online = Button(self.__root, text='1 vs 1 en ligne', command=lambda: self.changeDisplay(self.__pageOnline, self.__pageOnlineConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__button1vs1onlineConfig = [720, 600]
-        self.__buttonSettings = Button(self.__root, bitmap="assets/logo/parametre.png", command=lambda: self.changeDisplay(self.__pageSettings, self.__pageSettingsConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonSettingsConfig = [1300, 100]
-        self.__buttonQuitGame = Button(self.__root, text='Quitter le jeu', command=lambda: self.__root.destroy(), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonQuitGameConfig = [720, 700]
-        self.__buttonBack = Button(self.__root, bitmap="assets/logo/retour.png", command=lambda: self.changeDisplay(self.__pageBack, self.__pageBackConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonBackConfig = [140, 100]
-        self.__buttonJoin = Button(self.__root, text='Rejoindre', command=lambda: self.getJoinText(), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonJoinConfig = [550, 400]
-        self.__buttonCreate = Button(self.__root, text='Créer', command=lambda: self.getCreateText(), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonCreateConfig = [550, 500]
-        self.__buttonBreak = Button(self.__root, bitmap="assets/logo/pause.png", command=lambda: [self.changeDisplay(self.__pageBreak, self.__pageBreakConfig), self.pause(True)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonBreakConfig = [1300, 100]
-        self.__buttonResume = Button(self.__root, text='Reprendre', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.pause(False), self.__turn.displayBoard()], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonResumeConfig = [720, 400]
-        self.__buttonRestart = Button(self.__root, text='Recommencer', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.startGame(self.__boardSize, self.__rayon)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonRestartConfig = [720, 500]
-        self.__buttonSaveGame = Button(self.__root, text='Sauvegarder et quitter', font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonSaveGameConfig = [720, 600]
-        self.__buttonQuit = Button(self.__root, text='Quitter la partie', command=lambda: self.changeDisplay(self.__pageAccueil, self.__pageAccueilConfig), font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonQuitConfig = [720, 700]
-        self.__buttonPetit = Button(self.__root, text='Petit', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.startGame(37, 65)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonPetitConfig = [720, 400]
-        self.__buttonMoyen = Button(self.__root, text='Moyen', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.startGame(61, 50)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonMoyenConfig = [720, 500]
-        self.__buttonGrand = Button(self.__root, text='Grand', command=lambda: [self.changeDisplay(self.__pageGame, self.__pageGameConfig), self.startGame(91, 40)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthLarge, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonGrandConfig = [720, 600]
-        self.__buttonAstro = Button(self.__root, text='Theme Astro', command=lambda: [self.changeTheme(self.__theme_astro), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonAstroConfig = [450, 300]
-        self.__buttonByScott = Button(self.__root, text='Theme ByScott', command=lambda: [self.changeTheme(self.__theme_imaginary), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonByScottConfig = [700, 300]
-        self.__buttonClassique = Button(self.__root, text='Theme Classique', command=lambda: [self.changeTheme(self.__theme_classique), self.changeDisplay(self.__pageBack, self.__pageBackConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightLarge, width=self.__widthMedium, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonClassiqueConfig = [950, 300]
-        self.__buttonWinScreen = Button(self.__root, bitmap="assets/logo/croix.png", command=lambda: [self.changeDisplay(self.__pageAccueil, self.__pageAccueilConfig)], font=self.__fontButton, fg=self.__fgColor, bg=self.__bgColor, height=self.__heightSmall, width=self.__widthSmall, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__buttonWinScreenConfig = [1300, 100]
-        
-        self.__labelBreak = Label(self.__root, text="PAUSE", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__labelBreakConfig = [720, 200]
-        self.__labelSettings = Label(self.__root, text="PARAMETRES", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__labelSettingsConfig = [720, 200]
-        self.__labelOnline = Label(self.__root, text="PARTIE PRIVEE", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__labelOnlineConfig = [720, 200]
-        self.__labelPlateau = Label(self.__root, text="PLATEAU", font=self.__fontLabel, fg=self.__fgColor, bg=self.__bgColor, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor)
-        self.__labelPlateauConfig = [720, 200]
-        
-        self.__joinEntryArea = Entry(self.__root, font=self.__fontEntry, fg=self.__fgColor, bg=self.__bgColor, width=25, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor, relief=FLAT)
-        self.__joinEntryAreaConfig = [850, 400]
-        self.__createEntryArea = Entry(self.__root, font=self.__fontEntry, fg=self.__fgColor, bg=self.__bgColor, width=25, highlightthickness=self.__bdSize, highlightbackground=self.__bdColor, relief=FLAT)
-        self.__createEntryAreaConfig = [850, 500]
-        
-        #------------------------------------ 
-        # Pages et configuration
-        #------------------------------------ 
-        
-        self.__pageAccueil = [self.__button1vs1, self.__button1vsIA, self.__button1vs1online, self.__buttonSettings, self.__buttonQuitGame]
-        self.__pageAccueilConfig =  [self.__button1vs1Config, self.__button1vsIAConfig, self.__button1vs1onlineConfig, self.__buttonSettingsConfig, self.__buttonQuitGameConfig]
-        
-        self.__pageSettings = [self.__labelSettings, self.__buttonBack, self.__buttonAstro, self.__buttonClassique, self.__buttonByScott]
-        self.__pageSettingsConfig = [self.__labelSettingsConfig, self.__buttonBackConfig, self.__buttonAstroConfig, self.__buttonClassiqueConfig, self.__buttonByScottConfig]
-        
-        self.__pageSizeBoard = [self.__buttonBack, self.__buttonPetit, self.__buttonMoyen, self.__buttonGrand, self.__labelPlateau]
-        self.__pageSizeBoardConfig = [self.__buttonBackConfig, self.__buttonPetitConfig, self.__buttonMoyenConfig, self.__buttonGrandConfig, self.__labelPlateauConfig]
-        
-        self.__pageGame = [self.__buttonBreak]
-        self.__pageGameConfig = [self.__buttonBreakConfig]
-        
-        self.__pageBreak = [self.__labelBreak, self.__buttonRestart, self.__buttonSaveGame, self.__buttonQuit, self.__buttonResume]
-        self.__pageBreakConfig = [self.__labelBreakConfig, self.__buttonRestartConfig, self.__buttonSaveGameConfig, self.__buttonQuitConfig, self.__buttonResumeConfig]
-        
-        self.__pageOnline = [self.__labelOnline, self.__buttonBack, self.__buttonJoin, self.__buttonCreate, self.__joinEntryArea, self.__createEntryArea]
-        self.__pageOnlineConfig = [self.__labelOnlineConfig, self.__buttonBackConfig, self.__buttonJoinConfig, self.__buttonCreateConfig, self.__joinEntryAreaConfig, self.__createEntryAreaConfig]
-        
-        self.__pageActuel = self.__pageAccueil
-        self.__pageActuelConfig = self.__pageAccueilConfig
-        
-        self.__pageBack = self.__pageAccueil
-        self.__pageBackConfig = self.__pageAccueilConfig
-        
-        self.__colorBoard = "black"
-        self.__bgCase = "#636262"
-        
-        self.__joinCode = None
-        self.__createCode = None
-        
+        # Les emplacements des widgets
+        self.__canvas_p = [self.__screen[0]*50/100, self.__screen[1]*50/100]
+        self.__logo_p = [self.__screen[0]*50/100, self.__screen[1]*20/100]
+        self.__button_player_vs_player_p = [self.__screen[0]*50/100, self.__screen[1]*40/100]
+        self.__button_player_vs_ordi_p = [self.__screen[0]*50/100, self.__screen[1]*50/100]
+        self.__button_player_vs_player_online_p = [self.__screen[0]*50/100, self.__screen[1]*60/100]
+        self.__button_quit_kamon_p = [self.__screen[0]*50/100, self.__screen[1]*70/100]
+        self.__button_settings_p = [self.__screen[0]*90/100, self.__screen[1]*10/100]
+        self.__button_back_p = [self.__screen[0]*10/100, self.__screen[1]*10/100]
+        self.__button_join_p = [self.__screen[0]*30/100, self.__screen[1]*40/100]
+        self.__button_create_p = [self.__screen[0]*30/100, self.__screen[1]*60/100]
+        self.__button_break_p = [self.__screen[0]*90/100, self.__screen[1]*10/100]
+        self.__button_resume_p = [self.__screen[0]*50/100, self.__screen[1]*40/100]
+        self.__button_restart_p = [self.__screen[0]*50/100, self.__screen[1]*50/100]
+        self.__button_save_game_p = [self.__screen[0]*50/100, self.__screen[1]*60/100]
+        self.__button_quit_game_p = [self.__screen[0]*50/100, self.__screen[1]*70/100]
+        self.__button_small_board_p = [self.__screen[0]*50/100, self.__screen[1]*40/100]
+        self.__button_medium_board_p = [self.__screen[0]*50/100, self.__screen[1]*50/100]
+        self.__button_large_board_p = [self.__screen[0]*50/100, self.__screen[1]*60/100]
+        self.__button_theme_astro_p = [450, 300]
+        self.__button_theme_imaginary_p = [700, 300]
+        self.__button_theme_classique_p = [950, 300]
+        self.__button_croix_p = [self.__screen[0]*90/100, self.__screen[1]*10/100]
+        self.__item_title_break_p = [self.__screen[0]*50/100, self.__screen[1]*20/100]
+        self.__item_title_settings_p = [self.__screen[0]*50/100, self.__screen[1]*20/100]
+        self.__item_title_online_p = [self.__screen[0]*50/100, self.__screen[1]*20/100]
+        self.__item_title_board_size_p = [self.__screen[0]*50/100, self.__screen[1]*20/100]
+        self.__entry_join_p = [self.__screen[0]*60/100, self.__screen[1]*40/100]
+        self.__entry_create_p = [self.__screen[0]*60/100, self.__screen[1]*60/100]
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Les widgets
+        self.__canvas = Canvas(self.__root, width=self.__screen[0], height=self.__screen[1], highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_player_vs_player = Button(self.__root, text='1 vs 1', command=lambda: self.change_display(self.__page_board_size), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_player_vs_ordi = Button(self.__root, text='1 vs IA', command=lambda: self.change_display(self.__page_board_size), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_player_vs_player_online = Button(self.__root, text='1 vs 1 en ligne', command=lambda: self.change_display(self.__page_online), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_quit_kamon = Button(self.__root, text='Quitter le jeu', command=lambda: self.__root.destroy(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_settings = Button(self.__root, bitmap="assets/logo/parametre.png", command=lambda: self.change_display(self.__page_settings), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_back = Button(self.__root, bitmap="assets/logo/retour.png", command=lambda: self.change_display(self.__page_back), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_join = Button(self.__root, text='Rejoindre', command=lambda: self.__get_entry_join(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_create = Button(self.__root, text='Créer', command=lambda: self.__get_entry_create(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_break = Button(self.__root, bitmap="assets/logo/pause.png", command=lambda: [self.change_display(self.__page_break), self.pause(True)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_resume = Button(self.__root, text='Reprendre', command=lambda: [self.change_display(self.__page_game), self.pause(False), self.__game.displayBoard()], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_restart = Button(self.__root, text='Recommencer', command=lambda: [self.change_display(self.__page_game), self.start_game(self.__game.get_board_size(), self.__game.get_rayon())], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_save_game = Button(self.__root, text='Sauvegarder et quitter', font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_quit_game = Button(self.__root, text='Quitter la partie', command=lambda: self.change_display(self.__page_accueil), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_small_board = Button(self.__root, text='Petit', command=lambda: [self.change_display(self.__page_game), self.start_game(37, 65)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_medium_board = Button(self.__root, text='Moyen', command=lambda: [self.change_display(self.__page_game), self.start_game(61, 50)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_large_board = Button(self.__root, text='Grand', command=lambda: [self.change_display(self.__page_game), self.start_game(91, 40)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_theme_astro = Button(self.__root, text='Theme Astro', command=lambda: [self.change_theme(self.__theme_astro)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_theme_imaginary = Button(self.__root, text='Theme ByScott', command=lambda: [self.change_theme(self.__theme_imaginary)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_theme_classique = Button(self.__root, text='Theme Classique', command=lambda: [self.change_theme(self.__theme_classique)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_croix = Button(self.__root, bitmap="assets/logo/croix.png", command=lambda: [self.change_display(self.__page_accueil)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__entry_join = Entry(self.__root, font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, width=25, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, relief=self.__relief_widget, highlightcolor=self.__hlc_widget)
+        self.__entry_create = Entry(self.__root, font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, width=25, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, relief=self.__relief_widget, highlightcolor=self.__hlc_widget)
+        self.__canvas.place(x=self.__canvas_p[0], y=self.__canvas_p[1], anchor=self.__anchor)
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Les codes pour les parties en réseaux
+        self.__entry_join_code = None
+        self.__entry_create_code = None
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Les items
+        self.__item_logo = None
+        self.__item_title_board_size = None
+        self.__item_title_break = None
+        self.__item_title_online = None
+        self.__item_title_settings = None
+        self.__item_bg = self.__canvas.create_image(self.__canvas_p[0], self.__canvas_p[1], image = self.image(self.__theme_actuel["bg"], self.__screen[0], self.__screen[1]), anchor= self.__anchor)
+        #--------------------------------------------------------------------------------------------------------------------#
+        # Les pages
+        self.__page_accueil = [[self.__button_player_vs_player, self.__button_player_vs_ordi, self.__button_player_vs_player_online, self.__button_settings, self.__button_quit_kamon], [self.__button_player_vs_player_p, self.__button_player_vs_ordi_p, self.__button_player_vs_player_online_p, self.__button_settings_p, self.__button_quit_kamon_p]]
+        self.__page_settings = [[self.__button_back, self.__button_theme_astro, self.__button_theme_classique, self.__button_theme_imaginary], [self.__button_back_p, self.__button_theme_astro_p, self.__button_theme_classique_p, self.__button_theme_imaginary_p]]
+        self.__page_board_size = [[self.__button_back, self.__button_small_board, self.__button_medium_board, self.__button_large_board], [self.__button_back_p, self.__button_small_board_p, self.__button_medium_board_p, self.__button_large_board_p]]
+        self.__page_game = [[self.__button_break], [self.__button_break_p]]
+        self.__page_break = [[self.__button_restart, self.__button_save_game, self.__button_quit_game, self.__button_resume], [self.__button_restart_p, self.__button_save_game_p, self.__button_quit_game_p, self.__button_resume_p]]
+        self.__page_online = [[self.__button_back, self.__button_join, self.__button_create, self.__entry_join, self.__entry_create], [self.__button_back_p, self.__button_join_p, self.__button_create_p, self.__entry_join_p, self.__entry_create_p]]
+        self.__page_actuel = None
+        self.__page_back = None
+        #--------------------------------------------------------------------------------------------------------------------#
         if __name__ == "__main__":
-            self.startKamon()
-
-    #------------------------------------   
-    # Fonction pour utiliser un png
-    #------------------------------------  
+            self.change_display(self.__page_accueil)
+            self.__root.mainloop()
 
     def image(self, image, width, height):
         image = PIL.Image.open(image)
@@ -160,72 +142,53 @@ class Menu:
         label = Label(self.__root, image=image)
         label.img=image
         return image
-    
-    #------------------------------------   
-    # Change de page
-    #------------------------------------ 
             
-    def changeDisplay(self, newPage, newPageConfig):
-        self.__pageBack = self.__pageActuel
-        self.__pageBackConfig = self.__pageActuelConfig
-        self.delDisplay()
-        self.__pageActuel = newPage
-        self.__pageActuelConfig = newPageConfig
-        self.display()
-        
-    def display(self):
-        for j in range(len(self.__pageActuel)):
-            self.__pageActuel[j].place(x=self.__pageActuelConfig[j][0], y=self.__pageActuelConfig[j][1], anchor="center")
-        if self.__pageActuel == self.__pageAccueil:
-            self.__canvas.create_image(720, 200, anchor="center", image=self.__logoImage)
-            
-    def delDisplay(self):
-        for i in range(len(self.__pageActuel)):
-            self.__pageActuel[i].place_forget()
-        self.__buttonWinScreen.place_forget()
-        self.__canvas.delete(ALL)
-        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.image(self.__theme_actuel["bg"], self.__screen[0], self.__screen[1]), anchor = "center") 
-        
-    #------------------------------------   
-    # Récupère les codes 
-    #------------------------------------ 
+    def change_display(self, page):
+        self.__page_back = self.__page_actuel
+        if self.__page_actuel != None:
+            for i in range(len(self.__page_actuel[0])):
+                self.__page_actuel[0][i].place_forget()
+        for i in range(len(page[0])):
+            page[0][i].place(x=page[1][i][0], y=page[1][i][1], anchor=self.__anchor)
+        if page == self.__page_accueil:
+            self.__item_logo = self.__canvas.create_image(self.__logo_p[0], self.__logo_p[1], anchor=self.__anchor, image=self.image(Themes().get_logo(), 700, 180))
+        if page != self.__page_accueil:
+            self.__canvas.delete(self.__item_logo)
+        if page == self.__page_break:
+            self.__item_title_break = self.__canvas.create_text(self.__item_title_break_p[0], self.__item_title_break_p[1], text="Pause", font=self.__font_courier_120_bold, fill=self.__fg_widget)
+        if page != self.__page_break:
+            self.__canvas.delete(self.__item_title_break)
+        if page == self.__page_online:
+            self.__item_title_online = self.__canvas.create_text(self.__item_title_online_p[0], self.__item_title_online_p[1], text="Online", font=self.__font_courier_120_bold, fill=self.__fg_widget)
+        if page != self.__page_online:
+            self.__canvas.delete(self.__item_title_online)
+        if page == self.__page_settings:
+            self.__item_title_settings = self.__canvas.create_text(self.__item_title_settings_p[0], self.__item_title_settings_p[1], text="Settings", font=self.__font_courier_120_bold, fill=self.__fg_widget)
+        if page != self.__page_settings:
+            self.__canvas.delete(self.__item_title_settings)
+        if page == self.__page_board_size:
+            self.__item_title_board_size = self.__canvas.create_text(self.__item_title_board_size_p[0], self.__item_title_board_size_p[1], text="Plateaux", font=self.__font_courier_120_bold, fill=self.__fg_widget)
+        if page != self.__page_board_size:
+            self.__canvas.delete(self.__item_title_board_size)
+        self.__page_actuel = page
+        self.__root.update()
          
-    def getJoinText(self):
-        self.__joinCode = self.__joinEntryArea.get()
+    def __get_entry_join(self):
+        self.__entry_join_code = self.__entry_join.get()
         
-    def getCreateText(self):
-        self.__createCode = self.__createEntryArea.get()
+    def __get_entry_create(self):
+        self.__entry_create_code = self.__entry_create.get()
         
-    #------------------------------------   
-    # Lance une partie
-    #------------------------------------  
-        
-    def startGame(self, boardSize, rayon):
-        self.__boardSize = boardSize
-        self.__rayon = rayon
-        self.__turn = GameTurn(self.image, self.__canvas, self.__canvasConfig, boardSize, rayon, self.__theme_actuel["list_png"], self.__theme_actuel["list_color"], self.__colorBoard, self.__bgCase, self.__theme_actuel["bg"], self.__buttonWinScreen, self.__buttonWinScreenConfig)
-        self.__turn.displayBoard()
+    def start_game(self, board_size, rayon):
+        self.__game = Game(self.__theme_actuel, self.image, self.__canvas, self.__canvas_p, board_size, rayon, self.__board_color_outline, self.__board_color, self.__button_croix, self.__button_croix_p)
     
-    #------------------------------------   
-    # Change le theme
-    #------------------------------------ 
-    
-    def changeTheme(self, theme):
+    def change_theme(self, theme):
+        self.__canvas.delete(self.__item_bg, self.__item_title_settings)
+        self.__item_bg = self.__canvas.create_image(self.__canvas_p[0], self.__canvas_p[1], image = self.image(theme["bg"], self.__screen[0], self.__screen[1]), anchor= self.__anchor)
+        self.__item_title_settings = self.__canvas.create_text(self.__item_title_settings_p[0], self.__item_title_settings_p[1], text="Settings", font=self.__font_courier_120_bold, fill=self.__fg_widget)
         self.__theme_actuel = theme
-       
-    #------------------------------------   
-    # Lance Kamon
-    #------------------------------------ 
         
-    def startKamon(self):
-        self.display()
-        self.__root.mainloop()
-        
-    #------------------------------------   
-    # Met le jeu sur pause
-    #------------------------------------ 
-    
     def pause(self, set):
-        self.__turn.setPause(set)
+        self.__game.setPause(set)
         
 Menu()

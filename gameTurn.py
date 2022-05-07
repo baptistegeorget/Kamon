@@ -4,43 +4,39 @@ import math
 from math import *
 from player import Player
 import copy
-from winScreen import WinScreen
  
-class GameTurn:
+class Game:
     
     #------------------------------------   
     # Constructeur
     #------------------------------------  
     
-    def __init__(self, func_image, canvas, canvasConfig, boardSize, rayon, listSymb, listColor, colorBoard, bgCase, backgroundImage, buttonBreak, buttonBreakConfig):
-        # Le canvas
+    def __init__(self, theme, func_image, canvas, canvas_p, board_size, rayon, board_color_outline, board_color):
+
+        self.__func_image = func_image
+        self.__theme = theme
         self.__canvas = canvas
         self.__canvas.bind('<Button-1>', self.gameTurn)
-        self.__backgroundImage = backgroundImage
-        self.__canvasConfig = canvasConfig
-        self.__pause = False
-        self.__buttonBreak = buttonBreak
-        self.__buttonBreakConfig = buttonBreakConfig
-        self.__func_image = func_image
-        
-        # Objet 
-        self.__bgCase = bgCase
+        self.__canvas_p = canvas_p
+        self.__board_size = board_size
         self.__rayon = rayon
+        
+        self.__pause = False
+        self.__board_color = board_color
         self.__borderdWidth = 5
-        self.__board = Board(rayon, boardSize, canvasConfig[0], canvasConfig[1], listSymb, listColor, func_image)
+        self.__board = Board(self.__rayon, self.__board_size, self.__canvas_p[0], self.__canvas_p[1], self.__theme["list_png"], self.__theme["list_color"], self.__func_image)
         self.__dic = self.__board.getDic()
         self.__ring = self.__board.getRing()
         self.__height = self.__board.getHeight()
-        self.__colorBoard = colorBoard
-        self.__listColor = listColor
+        self.__board_color_outline = board_color_outline
         
-        # Dernier coups joué
         self.__lastHit = ()
         
-        # Joueur actuel
         self.__player1 = Player(1).getPlayer()
         self.__player2 = Player(2).getPlayer()
         self.__playerActuel = self.__player1 
+        
+        self.displayBoard()  
                 
     #------------------------------------   
     # Met le jeu en pause
@@ -49,18 +45,23 @@ class GameTurn:
     def setPause(self, set):
         self.__pause = set
         
+    def get_board_size(self):
+        return self.__board_size
+        
+    def get_rayon(self):
+        return self.__rayon
     #------------------------------------   
     # Affichage du plateau
     #------------------------------------  
     
     def displayBoard(self):
         self.__canvas.delete(ALL)
-        self.__canvas.create_image(self.__canvasConfig[0], self.__canvasConfig[1], image = self.__func_image(self.__backgroundImage, 1440, 900), anchor = "center")
+        self.__canvas.create_image(self.__canvas_p[0], self.__canvas_p[1], image = self.__func_image(self.__theme["bg"], 1440, 900), anchor = "center")
         for key in self.__dic:
             value = self.__dic[key]
             listCoordCorner = self.__board.generateCoordCorner(value[0][0], value[0][1], self.__rayon)
             listCoordCircle = self.__board.generateCoordCircle(value[0][0], value[0][1], self.__rayon*0.6)
-            self.__canvas.create_polygon(listCoordCorner, fill=self.__bgCase, outline=self.__colorBoard, width=self.__borderdWidth)
+            self.__canvas.create_polygon(listCoordCorner, fill=self.__board_color, outline=self.__board_color_outline, width=self.__borderdWidth)
             self.__canvas.create_oval(listCoordCircle, fill=value[1][1], width=0)
             self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
             self.__canvas.create_polygon(listCoordCorner, fill="", outline="", width=self.__borderdWidth, activeoutline="yellow")
@@ -94,12 +95,8 @@ class GameTurn:
                 self.displayBoard()
                 if self.verifSide() == True or self.verifTrap() == True or self.verifAgainPlayer() == False:
                     self.__pause = True
-                    winScreen = WinScreen(self.__canvas, self.__canvasConfig, self.__playerActuel[0], self.__backgroundImage, self.__buttonBreak, self.__buttonBreakConfig, "win")
-                    winScreen.displayWinScreen()
                 elif self.verifEgal():
                     self.__pause = True
-                    winScreen = WinScreen(self.__canvas, self.__canvasConfig, self.__playerActuel[0], self.__backgroundImage, self.__buttonBreak, self.__buttonBreakConfig, "egal")
-                    winScreen.displayWinScreen()
                 self.changePlayer()
     
     #------------------------------------   
@@ -118,7 +115,7 @@ class GameTurn:
     
     def possible(self, key):
         value = self.__dic[key]
-        if value[1][1] != self.__listColor[0]:
+        if value[1][1] != self.__theme["list_color"][0]:
             if value[2] == 0:
                 if self.__lastHit == () or self.__lastHit[0] == value[1][0] or self.__lastHit[1] == value[1][1]:
                     return True
@@ -180,7 +177,7 @@ class GameTurn:
     #verifier si toute les cases sont jouées
     def verifEgal(self):
         for value in self.__dic.values():
-            if value[1][1] != self.__listColor[0] and value[2] == 0:
+            if value[1][1] != self.__theme["list_color"][0] and value[2] == 0:
                 return False 
         return True
     

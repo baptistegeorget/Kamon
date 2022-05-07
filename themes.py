@@ -4,6 +4,7 @@ class Themes:
     
     def __init__(self):
         
+        self.__logo = "assets/logo/logo.png"
         self.__bg_astro = "assets/background/astro.png"
         self.__bg_classique = "assets/background/classique.png"
         self.__bg_imaginary = "assets/background/byscott.png"
@@ -95,3 +96,6 @@ class Themes:
         
     def get_themes(self):
         return self.__theme_astro, self.__theme_imaginary, self.__theme_classique
+    
+    def get_logo(self):
+        return self.__logo
