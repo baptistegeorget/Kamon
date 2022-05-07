@@ -1,7 +1,6 @@
 import math
 from math import *
 import random
-from PIL import Image, ImageTk
 from case import Case
 
 class Board: 
@@ -152,8 +151,3 @@ class Board:
             return (round(x), round(self.__height*deplacement+y))
         if axe == "s":
             return (round(-(self.__rayon*1.5)*deplacement+x), round(-(self.__height/2)*deplacement+y))
-        
-    def image(self, image, width, height):
-        file = Image.open(image)
-        file = file.resize((width, height), Image.ANTIALIAS)
-        return ImageTk.PhotoImage(file)
