@@ -1,16 +1,8 @@
 class Player:
     
-    #------------------------------------
-    # Constructeur
-    #------------------------------------
-    
-    def __init__(self, numeroJoueur):
+    def __init__(self, numero_joueur):
         self.__color = ["white", "black"]
-        self.__numeroJoueur = numeroJoueur
+        self.__numero_joueur = numero_joueur
         
-    #------------------------------------
-    # Renvoie l'objet joueur
-    #------------------------------------
-        
-    def getPlayer(self):
-        return [self.__numeroJoueur, self.__color[self.__numeroJoueur-1]]
+    def get_player(self):
+        return [self.__numero_joueur, self.__color[self.__numero_joueur-1]]

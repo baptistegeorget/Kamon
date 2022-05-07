@@ -6,167 +6,135 @@ from case import Case
 
 class Board: 
      
-    #------------------------------------   
-    # Constructeur
-    #------------------------------------   
-    
-    def __init__(self, rayon, boardSize, centerX, centerY, listSymb, listColor, func_image):
+    def __init__(self, rayon, board_size, center_x, center_y, list_symb, list_color, func_image):
         
         self.__func_image = func_image
         self.__rayon = rayon
         self.__height = math.sqrt(3)*rayon
-        self.__boardSize = boardSize
-        self.__centerX = centerX
-        self.__centerY = centerY
+        self.__board_size = board_size
+        self.__center_x = center_x
+        self.__center_y = center_y
         self.__ring = self.ring()
-        self.__listSymb = listSymb
-        self.__listColor = listColor
+        self.__list_symb = list_symb
+        self.__list_color = list_color
     
-    #------------------------------------   
-    # Renvoie les données du plateau
-    #------------------------------------
+    def get_dic(self):
+        return self.create_dic(self.__list_symb, self.__list_color)
     
-    def getDic(self):
-        return self.createDic(self.__listSymb, self.__listColor)
-    
-    def getHeight(self):
+    def get_height(self):
         return self.__height
     
-    def getRing(self):
+    def get_ring(self):
         return self.__ring
     
-    #------------------------------------
-    # Calcule le nombre d'anneaux
-    #------------------------------------
-    
     def ring(self):
-        if self.__boardSize == 37:
+        if self.__board_size == 37:
             return 3
-        if self.__boardSize == 61:
+        if self.__board_size == 61:
             return 4
-        if self.__boardSize == 91:
+        if self.__board_size == 91:
             return 5
     
-    #------------------------------------
-    # Créer une liste de clés pour le dictionnaire
-    #------------------------------------
-    
-    def listCoordKey(self):
-        listCoordKey = []
-        coordKey = [0, 0, 0]
-        self.addList(listCoordKey, coordKey)
+    def list_coord_key(self):
+        list_coord_key = []
+        coord_key = [0, 0, 0]
+        self.add_list(list_coord_key, coord_key)
         for i in range(1, self.__ring+1):
             for _ in range(i):
-                coordKey[1] -= 1
-                coordKey[2] += 1
-            self.addList(listCoordKey, coordKey)
+                coord_key[1] -= 1
+                coord_key[2] += 1
+            self.add_list(list_coord_key, coord_key)
             for _ in range(i):
-                coordKey[2] -= 1
-                coordKey[0] += 1
-                self.addList(listCoordKey, coordKey)
+                coord_key[2] -= 1
+                coord_key[0] += 1
+                self.add_list(list_coord_key, coord_key)
             for _ in range(i):
-                coordKey[2] -= 1
-                coordKey[1] += 1
-                self.addList(listCoordKey, coordKey)
+                coord_key[2] -= 1
+                coord_key[1] += 1
+                self.add_list(list_coord_key, coord_key)
             for _ in range(i):
-                coordKey[0] -= 1
-                coordKey[1] += 1
-                self.addList(listCoordKey, coordKey)
+                coord_key[0] -= 1
+                coord_key[1] += 1
+                self.add_list(list_coord_key, coord_key)
             for _ in range(i):
-                coordKey[0] -= 1
-                coordKey[2] += 1
-                self.addList(listCoordKey, coordKey)
+                coord_key[0] -= 1
+                coord_key[2] += 1
+                self.add_list(list_coord_key, coord_key)
             for _ in range(i):
-                coordKey[1] -= 1
-                coordKey[2] += 1
-                self.addList(listCoordKey, coordKey)
+                coord_key[1] -= 1
+                coord_key[2] += 1
+                self.add_list(list_coord_key, coord_key)
             if i > 1:
                 for _ in range(i-1):
-                    coordKey[1] -= 1
-                    coordKey[0] += 1
-                    self.addList(listCoordKey, coordKey)
-            coordKey = [0, 0, 0]
-        return listCoordKey
+                    coord_key[1] -= 1
+                    coord_key[0] += 1
+                    self.add_list(list_coord_key, coord_key)
+            coord_key = [0, 0, 0]
+        return list_coord_key
     
-    def addList(self, listCoordKey, coordKey):
-        coordKey = tuple(coordKey)
-        listCoordKey.append(coordKey)
-        coordKey = list(coordKey)
+    def add_list(self, list_coord_key, coord_key):
+        coord_key = tuple(coord_key)
+        list_coord_key.append(coord_key)
+        coord_key = list(coord_key)
     
-    #------------------------------------
-    # Creer une liste d'aspect pour le dictionnaire
-    #------------------------------------
-    
-    def listAspect(self, listSymb, listColor):
-        listAspect = []
-        listRandomSymb = self.randomSymb(listSymb)
+    def list_aspect(self, list_symb, list_color):
+        list_aspect = []
+        list_random_symb = self.random_symb(list_symb)
         for i in range(1, 7):
-            for j in range((self.__boardSize-1)//6):
-                listAspect += [(listRandomSymb[i], listColor[j+1])]
-        listAspect += [(listRandomSymb[0], listColor[0])]
-        random.shuffle(listAspect)
-        return listAspect
+            for j in range((self.__board_size-1)//6):
+                list_aspect += [(list_random_symb[i], list_color[j+1])]
+        list_aspect += [(list_random_symb[0], list_color[0])]
+        random.shuffle(list_aspect)
+        return list_aspect
     
-    def randomSymb(self, listSymb):
-        random.shuffle(listSymb)
-        sevenSymb = [""]
+    def random_symb(self, list_symb):
+        random.shuffle(list_symb)
+        seven_symb = [""]
         for i in range(6):
-            sevenSymb.append(self.__func_image(listSymb[i], round((self.__centerX+0.60*self.__rayon)-(self.__centerX-0.60*self.__rayon)), round((self.__centerY+0.60*self.__rayon)-(self.__centerY-0.60*self.__rayon))))
-        return sevenSymb
+            seven_symb.append(self.__func_image(list_symb[i], round((self.__center_x+0.60*self.__rayon)-(self.__center_x-0.60*self.__rayon)), round((self.__center_y+0.60*self.__rayon)-(self.__center_y-0.60*self.__rayon))))
+        return seven_symb
     
-    #------------------------------------
-    # Creer une liste de position pour le dictionnaire
-    #------------------------------------
-    
-    def listPosition(self):
-        listPosition = []
-        position = (self.__centerX, self.__centerY)
-        listPosition.append(position)
+    def list_position(self):
+        list_position = []
+        position = (self.__center_x, self.__center_y)
+        list_position.append(position)
         for i in range(1, self.__ring+1):
             for _ in range(i):
-                position = self.axeDeplacement("r", -1.1, position[0], position[1])
-            listPosition.append(position)
+                position = self.axe_deplacement("r", -1.1, position[0], position[1])
+            list_position.append(position)
             for _ in range(i):
-                position = self.axeDeplacement("s", -1.1, position[0], position[1])
-                listPosition.append(position)
+                position = self.axe_deplacement("s", -1.1, position[0], position[1])
+                list_position.append(position)
             for _ in range(i):
-                position = self.axeDeplacement("r", 1.1, position[0], position[1])
-                listPosition.append(position)
+                position = self.axe_deplacement("r", 1.1, position[0], position[1])
+                list_position.append(position)
             for _ in range(i):
-                position = self.axeDeplacement("q", -1.1, position[0], position[1])
-                listPosition.append(position)
+                position = self.axe_deplacement("q", -1.1, position[0], position[1])
+                list_position.append(position)
             for _ in range(i):
-                position = self.axeDeplacement("s", 1.1, position[0], position[1])
-                listPosition.append(position)
+                position = self.axe_deplacement("s", 1.1, position[0], position[1])
+                list_position.append(position)
             for _ in range(i):
-                position = self.axeDeplacement("r", -1.1, position[0], position[1])
-                listPosition.append(position)
+                position = self.axe_deplacement("r", -1.1, position[0], position[1])
+                list_position.append(position)
             if i > 1:
                 for _ in range(i-1):
-                    position = self.axeDeplacement("q", 1.1, position[0], position[1])
-                    listPosition.append(position)
-            position = (self.__centerX, self.__centerY)
-        return listPosition
+                    position = self.axe_deplacement("q", 1.1, position[0], position[1])
+                    list_position.append(position)
+            position = (self.__center_x, self.__center_y)
+        return list_position
     
-    #------------------------------------
-    # Créer un dictionnaire
-    #------------------------------------
-    
-    def createDic(self, listSymb, listColor):
+    def create_dic(self, list_symb, list_color):
         dic = {}
-        listAspect = self.listAspect(listSymb, listColor)
-        listPosition = self.listPosition()
-        listCoordKey = self.listCoordKey()
-        for i in range(self.__boardSize):
-            case = Case(listPosition[i], listAspect[i])
-            dic[listCoordKey[i]] = case.getCase()
+        list_aspect = self.list_aspect(list_symb, list_color)
+        list_position = self.list_position()
+        list_coord_key = self.list_coord_key()
+        for i in range(self.__board_size):
+            case = Case(list_position[i], list_aspect[i])
+            dic[list_coord_key[i]] = case.get_case()
         return dic
             
-    #------------------------------------
-    # Calcule les coordonnées des coins d'un hexagone
-    #------------------------------------
-    
-    def generateCoordCorner(self, x, y, rayon):
+    def generate_coord_corner(self, x, y, rayon):
         return [(x+rayon, y), 
                 (rayon*math.cos(pi/3)+x, rayon*math.sin(pi/3)+y), 
                 (-(rayon*math.cos(pi/3))+x, rayon*math.sin(pi/3)+y), 
@@ -174,18 +142,10 @@ class Board:
                 (-(rayon*math.cos(pi/3))+x, -(rayon*math.sin(pi/3))+y), 
                 (rayon*math.cos(pi/3)+x, -(rayon*math.sin(pi/3))+y)]
         
-    #------------------------------------
-    # Calcule les coordonnées pour tracer un cercle
-    #------------------------------------
-        
-    def generateCoordCircle(self, x, y, rayon):
+    def generate_coord_circle(self, x, y, rayon):
         return [(x-rayon, y-rayon), (x+rayon, y+rayon)]
     
-    #------------------------------------
-    # Calcule un déplacement sur les vecteurs (q, r, s)
-    #------------------------------------
-    
-    def axeDeplacement(self, axe, deplacement, x, y):
+    def axe_deplacement(self, axe, deplacement, x, y):
         if axe == "q":
             return (round(self.__rayon*1.5*deplacement+x), round(-(self.__height/2)*deplacement+y))
         if axe == "r":
@@ -193,10 +153,6 @@ class Board:
         if axe == "s":
             return (round(-(self.__rayon*1.5)*deplacement+x), round(-(self.__height/2)*deplacement+y))
         
-    #------------------------------------   
-    # Fonction pour utiliser un png
-    #------------------------------------  
-
     def image(self, image, width, height):
         file = Image.open(image)
         file = file.resize((width, height), Image.ANTIALIAS)

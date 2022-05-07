@@ -1,5 +1,3 @@
-from PIL import Image, ImageTk
-
 class Themes:
     
     def __init__(self):
