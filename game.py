@@ -5,7 +5,7 @@ import copy
  
 class Game:
     
-    def __init__(self, theme, func_image, canvas, canvas_p, board_size, rayon, board_color_outline, board_color, board_border):
+    def __init__(self, theme, func_image, canvas, canvas_p, board_size, rayon, board_color_outline, board_color, board_border, board_hlc):
 
         self.__func_image = func_image
         self.__theme = theme
@@ -17,6 +17,7 @@ class Game:
         self.__board_color = board_color
         self.__board_color_outline = board_color_outline
         self._board_border = board_border
+        self.__board_hlc = board_hlc
         self.__pause = False
         self.__board = Board(self.__rayon, self.__board_size, self.__canvas_p[0], self.__canvas_p[1], self.__theme["list_png"], self.__theme["list_color"], self.__func_image)
         self.__dic = self.__board.get_dic()
@@ -50,7 +51,7 @@ class Game:
             self.__dic__item["polygon_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill=self.__board_color, outline=self.__board_color_outline, width=self._board_border)
             self.__dic__item["oval_"+str(value)] = self.__canvas.create_oval(list_coord_circle, fill=value[1][1], width=0)
             self.__dic__item["image_"+str(value)] = self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
-            self.__dic__item["outline_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill="", outline="", width=self._board_border, activeoutline="yellow")
+            self.__dic__item["outline_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill="", outline="", width=self._board_border, activeoutline=self.__board_hlc)
             if value[2] != 0:
                 list_coord_corner = self.__board.generate_coord_corner(value[0][0], value[0][1], self.__rayon*0.9)
                 list_coord_circle = self.__board.generate_coord_circle(value[0][0], value[0][1], self.__rayon*0.7)

@@ -44,6 +44,7 @@ class Menu:
         self.__relief_widget = FLAT
         self.__board_color_outline = "black"
         self.__board_color = "#555"
+        self.__board_hlc = "yellow"
         self.__board_border = 5
         self.__font_helvetica_24_bold = ("Helvetica", 24, "bold")
         self.__font_courier_120_bold = ("Courier", 120, "bold")
@@ -184,7 +185,7 @@ class Menu:
         
     def start_game(self, board_size, rayon, board_border):
         self.__board_border = board_border
-        self.__game = Game(self.__theme_actuel, self.image, self.__canvas, self.__canvas_p, board_size, rayon, self.__board_color_outline, self.__board_color, self.__board_border)
+        self.__game = Game(self.__theme_actuel, self.image, self.__canvas, self.__canvas_p, board_size, rayon, self.__board_color_outline, self.__board_color, self.__board_border, self.__board_hlc)
     
     def change_theme(self, theme):
         self.__canvas.delete(self.__item_bg, self.__item_title_settings)
