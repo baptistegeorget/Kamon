@@ -1,14 +1,24 @@
+from tkinter import DISABLED
 from board import Board
 import math
 from player import Player
 import copy
+from random import randint, random
+from time import sleep
  
 class Game:
     
-    def __init__(self, theme, func_image, canvas, canvas_p, board_size, rayon, board_color_outline, board_color, board_border, board_hlc):
+    def __init__(self, theme, func_image, canvas, canvas_p, board_size, rayon, board_color_outline, board_color, board_border, board_hlc, screen, win_screen_outline_color, win_screen_color, win_screen_text_color, font_courier_120_bold, mode, func_change_state):
 
         self.__func_image = func_image
+        self.__mode = mode
+        self.__func_change_state = func_change_state
+        self.__screen = screen
         self.__theme = theme
+        self.__win_screen_outline_color = win_screen_outline_color
+        self.__win_screen_color = win_screen_color
+        self.__win_screen_text_color = win_screen_text_color
+        self.__font_courier_120_bold = font_courier_120_bold
         self.__canvas = canvas
         self.__canvas.bind('<Button-1>', self.game_turn)
         self.__canvas_p = canvas_p
@@ -27,7 +37,7 @@ class Game:
         self.__player_1 = Player(1).get_player()
         self.__player_2 = Player(2).get_player()
         self.__player_actuel = self.__player_1
-        self.__dic__item = {}
+        self.__dic_item = {}
         self.display_board()  
                 
     def set_pause(self, set):
@@ -40,23 +50,33 @@ class Game:
         return self.__rayon
     
     def get_dic_item(self):
-        return self.__dic__item
+        return self.__dic_item
+    
+    def display_win_screen(self, text):
+        self.__dic_item["rectangle"] = self.__canvas.create_rectangle(self.__canvas_p[0]-self.__screen[0]*25/100, self.__canvas_p[1]-self.__screen[1]*25/100, self.__canvas_p[0]+self.__screen[0]*25/100, self.__canvas_p[1]+self.__screen[1]*25/100, fill=self.__win_screen_color, outline=self.__win_screen_outline_color, width=5)
+        self.__dic_item["text"] = self.__canvas.create_text(self.__canvas_p[0], self.__canvas_p[1], text=text, font=self.__font_courier_120_bold, fill=self.__win_screen_text_color)
     
     def display_board(self):
-        for value in self.__dic__item.values():
+        for value in self.__dic_item.values():
             self.__canvas.delete(value)
+        if self.__last_hit != ():
+            list_coord_corner = self.__board.generate_coord_corner(self.__screen[0]*20/100, self.__screen[1]*10/100, self.__rayon)
+            list_coord_circle = self.__board.generate_coord_circle(self.__screen[0]*20/100, self.__screen[1]*10/100, self.__rayon*0.6)
+            self.__dic_item["polygon_gold"] = self.__canvas.create_polygon(list_coord_corner, fill=self.__board_color, outline=self.__board_hlc, width=self._board_border)
+            self.__dic_item["oval_gold"] = self.__canvas.create_oval(list_coord_circle, fill=self.__last_hit[1], width=0)
+            self.__dic_item["image_gold"] = self.__canvas.create_image(self.__screen[0]*20/100, self.__screen[1]*10/100, image=self.__last_hit[0])
         for value in self.__dic.values():
             list_coord_corner = self.__board.generate_coord_corner(value[0][0], value[0][1], self.__rayon)
             list_coord_circle = self.__board.generate_coord_circle(value[0][0], value[0][1], self.__rayon*0.6)
-            self.__dic__item["polygon_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill=self.__board_color, outline=self.__board_color_outline, width=self._board_border)
-            self.__dic__item["oval_"+str(value)] = self.__canvas.create_oval(list_coord_circle, fill=value[1][1], width=0)
-            self.__dic__item["image_"+str(value)] = self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
-            self.__dic__item["outline_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill="", outline="", width=self._board_border, activeoutline=self.__board_hlc)
+            self.__dic_item["polygon_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill=self.__board_color, outline=self.__board_color_outline, width=self._board_border)
+            self.__dic_item["oval_"+str(value)] = self.__canvas.create_oval(list_coord_circle, fill=value[1][1], width=0)
+            self.__dic_item["image_"+str(value)] = self.__canvas.create_image(value[0][0], value[0][1], image=value[1][0])
+            self.__dic_item["outline_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill="", outline="", width=self._board_border, activeoutline=self.__board_hlc)
             if value[2] != 0:
                 list_coord_corner = self.__board.generate_coord_corner(value[0][0], value[0][1], self.__rayon*0.9)
                 list_coord_circle = self.__board.generate_coord_circle(value[0][0], value[0][1], self.__rayon*0.7)
-                self.__dic__item["pion_polygon_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill="", outline=self.color_player(value[2]), width=0.2*self.__rayon)
-                self.__dic__item["pion_oval_"+str(value)] = self.__canvas.create_oval(list_coord_circle, fill="", outline=self.color_player(value[2]), width=0.25*self.__rayon)
+                self.__dic_item["pion_polygon_"+str(value)] = self.__canvas.create_polygon(list_coord_corner, fill="", outline=self.color_player(value[2]), width=0.2*self.__rayon)
+                self.__dic_item["pion_oval_"+str(value)] = self.__canvas.create_oval(list_coord_circle, fill="", outline=self.color_player(value[2]), width=0.25*self.__rayon)
         self.__canvas.update()
     
     def color_player(self, value):
@@ -65,9 +85,19 @@ class Game:
         else:
             return self.__player_2[1]
     
+    def ordi(self):
+        list_key = []
+        for key in self.__dic:
+            if self.possible(key):
+                list_key.append(key)
+        return list_key[randint(0, len(list_key)-1)]
+    
     def game_turn(self, event):
         if self.__pause == False:
-            key = self.where(event.x, event.y)
+            if self.__player_actuel == self.__player_2 and self.__mode == "ordi":
+                key = self.ordi()
+            else:
+                key = self.where(event.x, event.y)
             if key != "no":
                 value = self.__dic[key]
                 if self.start_or_possible(key, self.__ring):
@@ -75,9 +105,22 @@ class Game:
                     self.display_board()
                     if self.verif_side() == True or self.verif_trap() == True or self.verif_again_player() == False:
                         self.__pause = True
-                    elif self.verif_egal():
+                        self.__func_change_state(DISABLED)
+                        sleep(0.5)
+                        self.display_win_screen(" The winner\nis Player "+str(self.__player_actuel[0])+"!")
+                    elif self.verif_egal() == True:
                         self.__pause = True
-                    self.change_player()
+                        self.__func_change_state(DISABLED)
+                        sleep(0.5)
+                        self.display_win_screen("He don't have\n a winner ...")
+                    if self.__player_actuel == self.__player_1 and self.__mode == "ordi":
+                        self.__canvas.unbind('<Button-1>')
+                        sleep(0.5)
+                        self.change_player()
+                        self.game_turn(1)
+                        self.__canvas.bind('<Button-1>', self.game_turn)
+                    else:
+                        self.change_player()
     
     def start_or_possible(self, key, ring):
         if self.__last_hit == ():
@@ -140,7 +183,6 @@ class Game:
         for value in self.__dic.values():
             if (value[1][0] == self.__last_hit[0] or value[1][1] == self.__last_hit[1]) and value[2] == 0:
                 return True
-        self.change_player()
         return False
     
     def verif_side(self):
