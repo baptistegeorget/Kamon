@@ -98,7 +98,7 @@ class Game:
                 key = self.ordi()
             else:
                 key = self.where(event.x, event.y)
-            if key != "no":
+            if key != False:
                 value = self.__dic[key]
                 if self.start_or_possible(key, self.__ring):
                     self.put(value)
@@ -141,7 +141,7 @@ class Game:
             if math.sqrt((value[0][0] - x)*(value[0][0] - x) + (value[0][1] - y)*(value[0][1] - y)) < self.__height/2:
                 key = self.get_key(value)
                 return key
-        return "no"
+        return False
     
     def get_key(self, val):
         for key, value in self.__dic.items():
@@ -209,7 +209,7 @@ class Game:
     def verif_trap(self):
         trap = False
         for key in self.__dic:
-            if self.__dic[key][2] != self.__player_actuel[0] and (key[0] != abs(self.__ring) and key[1] != abs(self.__ring) and key[2] != abs(self.__ring)):
+            if self.__dic[key][2] != self.__player_actuel[0] and (abs(key[0]) != self.__ring and abs(key[1]) != self.__ring and abs(key[2]) != self.__ring):
                 list_key = []
                 if self.voisin_trap(list(key), list_key) != False:
                     trap = True

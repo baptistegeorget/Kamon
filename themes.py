@@ -5,7 +5,7 @@ class Themes:
         self.__logo = "assets/logo/logo.png"
         self.__bg_astro = "assets/background/astro.png"
         self.__bg_classique = "assets/background/classique.png"
-        self.__bg_imaginary = "assets/background/byscott.png"
+        self.__bg_imaginary = "assets/background/imaginary.png"
         
         self.__list_png_astro = ["assets/symbole/astro/balance.png",
                             "assets/symbole/astro/bélier.png",

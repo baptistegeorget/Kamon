@@ -1,30 +1,19 @@
-from tkinter.font import NORMAL
+from tkinter import NORMAL
 import PIL.Image, PIL.ImageTk
 from tkinter import DISABLED, Tk, Button, Canvas, Entry, Label, FLAT
 from game import Game
 from themes import Themes
-import os
-import AppKit
-import ctypes
 
 class Menu: 
     
     def __init__(self):
         
         #--------------------------------------------------------------------------------------------------------------------#
-        # Choix de l'OS
-        if os.name == "posix": # Macos, Linux
-            self.__screen = (round(AppKit.NSScreen.screens()[0].frame().size.width), round(AppKit.NSScreen.screens()[0].frame().size.height))
-        elif os.name == "nt": # Windows
-            self.__screen = (round(ctypes.windll.user32.GetSystemMetrics(0)), round(ctypes.windll.user32.GetSystemMetrics(1)))
-        else: # Inconnu
-            self.__screen = (1920, 1080)
-            print("Error: Votre OS n'est pas reconnu.")
-        #--------------------------------------------------------------------------------------------------------------------#
         # Fenêtre Tkinter #
         self.__root = Tk(className = " Kamon")
-        self.__root.geometry(str(self.__screen[0])+"x"+str(self.__screen[1]))
         self.__root.attributes('-fullscreen', True)
+        self.__screen = (self.__root.winfo_width(), self.__root.winfo_height())
+        self.__root.geometry(str(self.__screen[0])+"x"+str(self.__screen[1]))
         self.__root.resizable(False, False)
         #--------------------------------------------------------------------------------------------------------------------#
         # Thèmes
@@ -39,9 +28,9 @@ class Menu:
         #--------------------------------------------------------------------------------------------------------------------#
         # Paramètrage des widget et du board
         self.__hlt_widget = 0
-        self.__hlb_widget = "dark slate blue"
-        self.__hlc_widget = "dark slate blue"
-        self.__fg_widget = "dark slate blue"
+        self.__hlb_widget = "black"
+        self.__hlc_widget = "white"
+        self.__fg_widget = "black"
         self.__bg_widget = "white"
         self.__relief_widget = FLAT
         self.__board_color_outline = "black"
@@ -134,7 +123,6 @@ class Menu:
         self.__page_game = [[self.__button_break], [self.__button_break_p]]
         self.__page_break = [[self.__button_restart, self.__button_save_game, self.__button_quit_game, self.__button_resume], [self.__button_restart_p, self.__button_save_game_p, self.__button_quit_game_p, self.__button_resume_p]]
         self.__page_online = [[self.__button_back, self.__button_join, self.__button_create, self.__entry_join, self.__entry_create], [self.__button_back_p, self.__button_join_p, self.__button_create_p, self.__entry_join_p, self.__entry_create_p]]
-        self.__page_win = [[],[]]
         self.__page_actuel = None
         self.__page_back = None
         #--------------------------------------------------------------------------------------------------------------------#
@@ -198,6 +186,10 @@ class Menu:
         self.__game = Game(self.__theme_actuel, self.image, self.__canvas, self.__canvas_p, board_size, rayon, self.__board_color_outline, self.__board_color, self.__board_border, self.__board_hlc, self.__screen, self.__win_screen_outline_color, self.__win_screen_color, self.__win_screen_text_color, self.__font_courier_70_bold, mode, self.change_state)
     
     def change_theme(self, theme):
+        if theme == self.__theme_astro:
+            self.__fg_widget = "white"
+        else:
+            self.__fg_widget = "black"
         self.__canvas.delete(self.__item_bg, self.__item_title_settings)
         self.__item_bg = self.__canvas.create_image(self.__canvas_p[0], self.__canvas_p[1], image = self.image(theme["bg"], self.__screen[0], self.__screen[1]), anchor= self.__anchor)
         self.__item_title_settings = self.__canvas.create_text(self.__item_title_settings_p[0], self.__item_title_settings_p[1], text="Settings", font=self.__font_courier_120_bold, fill=self.__fg_widget)
