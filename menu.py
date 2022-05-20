@@ -3,7 +3,10 @@ from tkinter import DISABLED, Tk, Button, Canvas, Entry, Label, FLAT, NORMAL
 from game import Game
 from themes import Themes
 import os
+from playsound import playsound
 import AppKit
+import threading
+import time
 
 class Menu: 
     
@@ -19,6 +22,8 @@ class Menu:
         self.__root.attributes('-fullscreen', True)
         self.__root.geometry(str(self.__screen[0])+"x"+str(self.__screen[1]))
         self.__root.resizable(False, False)
+        self.__loop = threading.Thread(target=self.loop, daemon=True)
+        self.__loop.start()
         #--------------------------------------------------------------------------------------------------------------------#
         # Thèmes
         self.__theme_astro = Themes().get_themes()[0]
@@ -89,7 +94,7 @@ class Menu:
         self.__button_player_vs_player = Button(self.__root, text='Play', command=lambda: [self.change_display(self.__page_board_size), self.set_mode("player")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_player_vs_ordi = Button(self.__root, text='Play IA', command=lambda: [self.change_display(self.__page_board_size), self.set_mode("ordi")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_player_vs_player_online = Button(self.__root, text='Play online', command=lambda: [self.change_display(self.__page_online), self.set_mode("online")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_quit_kamon = Button(self.__root, text='Quit Kamon', command=lambda: self.__root.destroy(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_quit_kamon = Button(self.__root, text='Quit Kamon', command=lambda: [self.__root.destroy()], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_settings = Button(self.__root, bitmap=Themes().get_logo()[1], command=lambda: self.change_display(self.__page_settings), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_back = Button(self.__root, bitmap=Themes().get_logo()[3], command=lambda: self.change_display(self.__page_back), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_join = Button(self.__root, text='Join', command=lambda: self.__get_entry_join(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
@@ -203,4 +208,16 @@ class Menu:
     def change_state(self, state):
             self.__page_break[0][3]["state"] = state
             self.__page_break[0][1]["state"] = state
+            
+    def start_music(self):
+        self.__thread = threading.Thread(target=playsound, args=["assets/music/anime_music.mp3"], daemon=True)
+        self.__thread.start()
+        
+    def loop(self):
+        self.start_music()
+        while True:
+            if self.__thread.is_alive() == False:
+                self.start_music()
+            time.sleep(2)
+        
 Menu()
