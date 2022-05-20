@@ -3,10 +3,11 @@ from tkinter import DISABLED, Tk, Button, Canvas, Entry, Label, FLAT, NORMAL
 from game import Game
 from themes import Themes
 import os
+import ctypes
 from playsound import playsound
-import AppKit
 import threading
 import time
+
 
 class Menu: 
     
@@ -14,16 +15,19 @@ class Menu:
         
         #--------------------------------------------------------------------------------------------------------------------#
         # Fenêtre Tkinter #
-        if os.name == "posix": # Macos, Linux
-            self.__screen = (round(AppKit.NSScreen.screens()[0].frame().size.width), round(AppKit.NSScreen.screens()[0].frame().size.height))
+        # Choix de l'OS
+        if os.name == "nt": # Windows
+            self.__screen = (round(ctypes.windll.user32.GetSystemMetrics(0)), round(ctypes.windll.user32.GetSystemMetrics(1)))
         else: # Inconnu
             self.__screen = (1920, 1080)
+            print("Error: Votre OS n'est pas reconnu.")
         self.__root = Tk(className = " Kamon")
         self.__root.attributes('-fullscreen', True)
         self.__root.geometry(str(self.__screen[0])+"x"+str(self.__screen[1]))
         self.__root.resizable(False, False)
         self.__loop = threading.Thread(target=self.loop, daemon=True)
         self.__loop.start()
+
         #--------------------------------------------------------------------------------------------------------------------#
         # Thèmes
         self.__theme_astro = Themes().get_themes()[0]
@@ -45,20 +49,19 @@ class Menu:
         self.__board_color_outline = "black"
         self.__board_color = "#555"
         self.__board_hlc = "yellow"
-        self.__board_border = round(5*self.__screen[0]/self.__screen[0])
+        self.__board_border = 5
         self.__font_helvetica_24_bold = ("Helvetica", 24, "bold")
         self.__font_courier_120_bold = ("Courier", 120, "bold")
         self.__font_courier_70_bold = ("Courier", 70, "bold")
-        self.__width_50_px = round(50*self.__screen[0]/self.__screen[0])
-        self.__height_50_px = round(50*self.__screen[0]/self.__screen[0])
-        self.__height_2 = round(2*self.__screen[0]/self.__screen[0])
-        self.__width_20 = round(20*self.__screen[0]/self.__screen[0])
-        self.__width_13 = round(13*self.__screen[0]/self.__screen[0])
+        self.__width_50_px = 52
+        self.__height_50_px = 50
+        self.__height_2 = 2
+        self.__width_20 = 23
+        self.__width_13 = 15
         self.__anchor = "center"
         self.__win_screen_outline_color = "yellow"
         self.__win_screen_color = "black"
         self.__win_screen_text_color = "white"
-        self.__mult_rayon = self.__screen[0]/self.__screen[0]
         #--------------------------------------------------------------------------------------------------------------------#
         # Les emplacements des widgets
         self.__canvas_p = [self.__screen[0]*50/100, self.__screen[1]*50/100]
@@ -94,19 +97,19 @@ class Menu:
         self.__button_player_vs_player = Button(self.__root, text='Play', command=lambda: [self.change_display(self.__page_board_size), self.set_mode("player")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_player_vs_ordi = Button(self.__root, text='Play IA', command=lambda: [self.change_display(self.__page_board_size), self.set_mode("ordi")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_player_vs_player_online = Button(self.__root, text='Play online', command=lambda: [self.change_display(self.__page_online), self.set_mode("online")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_quit_kamon = Button(self.__root, text='Quit Kamon', command=lambda: [self.__root.destroy()], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_settings = Button(self.__root, bitmap=Themes().get_logo()[1], command=lambda: self.change_display(self.__page_settings), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_back = Button(self.__root, bitmap=Themes().get_logo()[3], command=lambda: self.change_display(self.__page_back), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_quit_kamon = Button(self.__root, text='Quit Kamon', command=lambda: self.__root.destroy(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_settings = Button(self.__root, bitmap="error", command=lambda: self.change_display(self.__page_settings), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_back = Button(self.__root, bitmap="error", command=lambda: self.change_display(self.__page_back), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_join = Button(self.__root, text='Join', command=lambda: self.__get_entry_join(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_create = Button(self.__root, text='Create', command=lambda: self.__get_entry_create(), font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_break = Button(self.__root, bitmap=Themes().get_logo()[2], command=lambda: [self.change_display(self.__page_break), self.__game.set_pause(True)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_break = Button(self.__root, bitmap="error", command=lambda: [self.change_display(self.__page_break), self.__game.set_pause(True)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_50_px, width=self.__width_50_px, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_resume = Button(self.__root, text='Resume', command=lambda: [self.change_display(self.__page_game), self.__game.set_pause(False), self.__game.display_board()], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_restart = Button(self.__root, text='Restart', command=lambda: [self.change_display(self.__page_game), self.start_game(self.__game.get_board_size(), self.__game.get_rayon(), self.__board_border, self.__mode), self.change_state(NORMAL)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_save_game = Button(self.__root, text='Save and quit', font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_quit_game = Button(self.__root, text='Quit', command=lambda: [self.change_display(self.__page_accueil), self.change_state(NORMAL)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_small_board = Button(self.__root, text='Small', command=lambda: [self.change_display(self.__page_game), self.start_game(37, self.__mult_rayon*65, 5, self.__mode)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_medium_board = Button(self.__root, text='Medium', command=lambda: [self.change_display(self.__page_game), self.start_game(61, self.__mult_rayon*50, 4, self.__mode)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
-        self.__button_large_board = Button(self.__root, text='Large', command=lambda: [self.change_display(self.__page_game), self.start_game(91, self.__mult_rayon*40, 3, self.__mode)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_small_board = Button(self.__root, text='Small', command=lambda: [self.change_display(self.__page_game), self.start_game(37, 71, 5, self.__mode)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_medium_board = Button(self.__root, text='Medium', command=lambda: [self.change_display(self.__page_game), self.start_game(61, 55, 4, self.__mode)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
+        self.__button_large_board = Button(self.__root, text='Large', command=lambda: [self.change_display(self.__page_game), self.start_game(91, 45, 3, self.__mode)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_theme_astro = Button(self.__root, text='Astro theme', command=lambda: [self.change_theme(self.__theme_astro)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_theme_imaginary = Button(self.__root, text='Imaginary theme', command=lambda: [self.change_theme(self.__theme_imaginary)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_theme_classique = Button(self.__root, text='Default theme', command=lambda: [self.change_theme(self.__theme_classique)], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_2, width=self.__width_13, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
@@ -159,7 +162,7 @@ class Menu:
         for i in range(len(page[0])):
             page[0][i].place(x=page[1][i][0], y=page[1][i][1], anchor=self.__anchor)
         if page == self.__page_accueil:
-            self.__item_logo = self.__canvas.create_image(self.__item_logo_p[0], self.__item_logo_p[1], anchor=self.__anchor, image=self.image(Themes().get_logo()[0], round(700*self.__screen[0]/self.__screen[0]), round(180*self.__screen[0]/self.__screen[0])))
+            self.__item_logo = self.__canvas.create_image(self.__item_logo_p[0], self.__item_logo_p[1], anchor=self.__anchor, image=self.image(Themes().get_logo()[0], round(700*self.__screen[0]/1440), round(180*self.__screen[0]/1440)))
         if page != self.__page_accueil:
             self.__canvas.delete(self.__item_logo)
         if page == self.__page_break:
@@ -208,7 +211,7 @@ class Menu:
     def change_state(self, state):
             self.__page_break[0][3]["state"] = state
             self.__page_break[0][1]["state"] = state
-            
+
     def start_music(self):
         self.__thread = threading.Thread(target=playsound, args=["assets/music/anime_music.mp3"], daemon=True)
         self.__thread.start()
@@ -219,5 +222,6 @@ class Menu:
             if self.__thread.is_alive() == False:
                 self.start_music()
             time.sleep(2)
-        
+
+
 Menu()
