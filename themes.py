@@ -6,6 +6,9 @@ class Themes:
         self.__bg_astro = "assets/background/astro.png"
         self.__bg_classique = "assets/background/classique.png"
         self.__bg_imaginary = "assets/background/imaginary.png"
+        self.__parametre = "assets/logo/parametre.bmp"
+        self.__pause = "assets/logo/pause.bmp"
+        self.__retour = "assets/logo/retour.bmp"
         
         self.__list_png_astro = ["assets/symbole/astro/balance.png",
                             "assets/symbole/astro/bélier.png",
@@ -96,4 +99,4 @@ class Themes:
         return self.__theme_astro, self.__theme_imaginary, self.__theme_classique
     
     def get_logo(self):
-        return self.__logo
+        return self.__logo, self.__parametre, self.__pause, self.__retour
