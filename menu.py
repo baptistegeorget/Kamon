@@ -2,6 +2,9 @@ import PIL.Image, PIL.ImageTk
 from tkinter import DISABLED, Tk, Button, Canvas, Entry, Label, FLAT, NORMAL
 from game import Game
 from themes import Themes
+import os
+import AppKit
+import ctypes
 
 class Menu: 
     
@@ -9,9 +12,17 @@ class Menu:
         
         #--------------------------------------------------------------------------------------------------------------------#
         # Fenêtre Tkinter #
+        # Choix de l'OS
+        if os.name == "posix": # Macos, Linux
+            self.__screen = (round(AppKit.NSScreen.screens()[0].frame().size.width), round(AppKit.NSScreen.screens()[0].frame().size.height))
+        elif os.name == "nt": # Windows
+            self.__screen = (round(ctypes.windll.user32.GetSystemMetrics(0)), round(ctypes.windll.user32.GetSystemMetrics(1)))
+        else: # Inconnu
+            self.__screen = (1920, 1080)
+            print("Error: Votre OS n'est pas reconnu.")
         self.__root = Tk(className = " Kamon")
         self.__root.attributes('-fullscreen', True)
-        self.__screen = (self.__root.winfo_width(), self.__root.winfo_height())
+        #self.__screen = (self.__root.winfo_width(), self.__root.winfo_height())
         self.__root.geometry(str(self.__screen[0])+"x"+str(self.__screen[1]))
         self.__root.resizable(False, False)
         #--------------------------------------------------------------------------------------------------------------------#
