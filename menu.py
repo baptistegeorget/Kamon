@@ -40,20 +40,20 @@ class Menu:
         self.__board_color_outline = "black"
         self.__board_color = "#555"
         self.__board_hlc = "yellow"
-        self.__board_border = round(5*self.__screen[0]/1440)
+        self.__board_border = round(5*self.__screen[0]/self.__screen[0])
         self.__font_helvetica_24_bold = ("Helvetica", 24, "bold")
         self.__font_courier_120_bold = ("Courier", 120, "bold")
         self.__font_courier_70_bold = ("Courier", 70, "bold")
-        self.__width_50_px = round(50*self.__screen[0]/1440)
-        self.__height_50_px = round(50*self.__screen[0]/1440)
-        self.__height_2 = round(2*self.__screen[0]/1440)
-        self.__width_20 = round(20*self.__screen[0]/1440)
-        self.__width_13 = round(13*self.__screen[0]/1440)
+        self.__width_50_px = round(50*self.__screen[0]/self.__screen[0])
+        self.__height_50_px = round(50*self.__screen[0]/self.__screen[0])
+        self.__height_2 = round(2*self.__screen[0]/self.__screen[0])
+        self.__width_20 = round(20*self.__screen[0]/self.__screen[0])
+        self.__width_13 = round(13*self.__screen[0]/self.__screen[0])
         self.__anchor = "center"
         self.__win_screen_outline_color = "yellow"
         self.__win_screen_color = "black"
         self.__win_screen_text_color = "white"
-        self.__mult_rayon = self.__screen[0]/1440
+        self.__mult_rayon = self.__screen[0]/self.__screen[0]
         #--------------------------------------------------------------------------------------------------------------------#
         # Les emplacements des widgets
         self.__canvas_p = [self.__screen[0]*50/100, self.__screen[1]*50/100]
@@ -154,7 +154,7 @@ class Menu:
         for i in range(len(page[0])):
             page[0][i].place(x=page[1][i][0], y=page[1][i][1], anchor=self.__anchor)
         if page == self.__page_accueil:
-            self.__item_logo = self.__canvas.create_image(self.__item_logo_p[0], self.__item_logo_p[1], anchor=self.__anchor, image=self.image(Themes().get_logo()[0], round(700*self.__screen[0]/1440), round(180*self.__screen[0]/1440)))
+            self.__item_logo = self.__canvas.create_image(self.__item_logo_p[0], self.__item_logo_p[1], anchor=self.__anchor, image=self.image(Themes().get_logo()[0], round(700*self.__screen[0]/self.__screen[0]), round(180*self.__screen[0]/self.__screen[0])))
         if page != self.__page_accueil:
             self.__canvas.delete(self.__item_logo)
         if page == self.__page_break:
