@@ -6,9 +6,9 @@ class Themes:
         self.__bg_astro = "assets/background/astro.png"
         self.__bg_classique = "assets/background/classique.png"
         self.__bg_imaginary = "assets/background/imaginary.png"
-        self.__parametre = "assets/logo/parametre.bmp"
-        self.__pause = "assets/logo/pause.bmp"
-        self.__retour = "assets/logo/retour.bmp"
+        self.__parametre = "assets/logo/parametre.png"
+        self.__pause = "assets/logo/pause.png"
+        self.__retour = "assets/logo/retour.png"
         
         self.__list_png_astro = ["assets/symbole/astro/balance.png",
                             "assets/symbole/astro/bélier.png",
