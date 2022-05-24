@@ -197,8 +197,7 @@ class Menu:
         self.__theme_actuel = theme
         
     def change_state(self, state):
-            self.__page_break[0][3]["state"] = state
-            self.__page_break[0][1]["state"] = state
+            self.__page_break[0][2]["state"] = state
 
     def start_music(self):
         self.__thread = threading.Thread(target=playsound, args=["assets/music/anime_music.mp3"], daemon=True)
