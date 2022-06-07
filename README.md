@@ -1,2 +1,2 @@
 # 1PROJ
-The Best Kamon ever. By Baptiste and Matisse and Marco and Scotch
+Réalisé par Scott CIROT, Marc-Antoine FLEURY, Matisse PIERROT, Baptiste GEORGET
