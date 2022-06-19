@@ -27,7 +27,6 @@ class Menu:
         self.__root.resizable(False, False)
         self.__loop = threading.Thread(target=self.loop, daemon=True)
         self.__loop.start()
-
         #--------------------------------------------------------------------------------------------------------------------#
         # Thèmes
         self.__theme_astro = Themes().get_themes()[0]
@@ -86,7 +85,6 @@ class Menu:
         self.__item_title_board_size_p = [self.__screen[0]*50/100, self.__screen[1]*20/100]
         #--------------------------------------------------------------------------------------------------------------------#
         # Les widgets
-        
         self.__canvas = Canvas(self.__root, width=self.__screen[0], height=self.__screen[1], highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_player_vs_player = Button(self.__root, text='Play', command=lambda: [self.change_display(self.__page_board_size), self.set_mode("player")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_1, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
         self.__button_player_vs_ordi = Button(self.__root, text='Play IA', command=lambda: [self.change_display(self.__page_board_size), self.set_mode("ordi")], font=self.__font_helvetica_24_bold, fg=self.__fg_widget, bg=self.__bg_widget, height=self.__height_1, width=self.__width_20, highlightthickness=self.__hlt_widget, highlightbackground=self.__hlb_widget, highlightcolor=self.__hlc_widget)
@@ -209,6 +207,5 @@ class Menu:
             if self.__thread.is_alive() == False:
                 self.start_music()
             time.sleep(2)
-
-
+            
 Menu()
